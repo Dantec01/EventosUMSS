@@ -27,6 +27,17 @@ Pagina web para los eventos de la UMSS enfocada en mobile first
 - **Integración con calendarios externos** (Google Calendar, Outlook, etc.) para sincronización de eventos.
 - **Módulo de sugerencias de eventos** basado en las preferencias del usuario.
 
+## UI inicial
+
+![image](https://github.com/user-attachments/assets/92dce830-ca93-47e0-b10e-a75e2a706069)
+![image](https://github.com/user-attachments/assets/61c666b1-3df1-409b-92a4-e9e77f4e046c)
+![image](https://github.com/user-attachments/assets/6a740654-8cbe-456b-942f-9086d4a59f69)
+![image](https://github.com/user-attachments/assets/2b95da35-a565-4832-b530-5b4b54060b17)
+
+## Diagrama ER base de datos
+
+![diagrama ER](https://github.com/user-attachments/assets/e91f9e96-4852-4bde-a18f-b19d226747af)
+
 ## Licencia
 
 Este proyecto está bajo una licencia personalizada. Consulta el archivo `LICENSE.txt` para obtener más información.
