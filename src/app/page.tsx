@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Search, Calendar as CalendarIcon, Clock, MapPin, LogIn, X, Plus, Upload, Heart } from "lucide-react"
+import eventsData from '@/lib/events.json'
 
 interface Event {
   id: number
@@ -29,7 +30,7 @@ interface Category {
   image: string
 }
 
-export default function EventosUMSS() {
+export default function Home() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [currentEventIndex, setCurrentEventIndex] = useState(0)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -45,14 +46,13 @@ export default function EventosUMSS() {
     description: '',
     image: null as File | null,
   })
-  const [events, setEvents] = useState<Event[]>([
-    { id: 1, title: "Concierto de Rock", category: "Música", date: "2023-09-15", time: "20:00", location: "Estadio Central", description: "Un increíble concierto de rock con las mejores bandas locales.", image: "/placeholder.svg?height=400&width=600", isSaved: false },
-    { id: 2, title: "Exposición de Arte Moderno", category: "Arte", date: "2023-09-20", time: "10:00", location: "Galería de Arte Municipal", description: "Descubre las últimas tendencias en arte moderno de artistas emergentes.", image: "/placeholder.svg?height=400&width=600", isSaved: false },
-    { id: 3, title: "Maratón de la Ciudad", category: "Deportes", date: "2023-09-25", time: "07:00", location: "Parque Central", description: "Participa en la maratón anual de la ciudad. ¡Corre por una buena causa!", image: "/placeholder.svg?height=400&width=600", isSaved: false },
-    { id: 4, title: "Conferencia de IA", category: "Tecnología", date: "2023-09-30", time: "14:00", location: "Centro de Convenciones", description: "Expertos en IA discuten los últimos avances y sus implicaciones futuras.", image: "/placeholder.svg?height=400&width=600", isSaved: false },
-    { id: 5, title: "Festival Gastronómico", category: "Gastronomía", date: "2023-10-05", time: "12:00", location: "Plaza Mayor", description: "Degusta platos de todo el mundo en nuestro festival gastronómico anual.", image: "/placeholder.svg?height=400&width=600", isSaved: false },
-    { id: 6, title: "Estreno de Película", category: "Cine", date: "2023-10-10", time: "19:00", location: "Cine Metropolis", description: "Asiste al estreno de la película más esperada del año.", image: "/placeholder.svg?height=400&width=600", isSaved: false },
-  ])
+  const [events, setEvents] = useState<Event[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    setEvents(eventsData.events.map(event => ({ ...event, isSaved: false })))
+    setIsLoading(false)
+  }, [])
 
   const categories: Category[] = [
     { name: "Música", image: "/placeholder.svg?height=200&width=300" },
@@ -63,27 +63,24 @@ export default function EventosUMSS() {
     { name: "Cine", image: "/placeholder.svg?height=200&width=300" },
   ]
 
-  const latestEvents = [
-    { id: 7, title: "Concierto de Jazz", category: "Música", date: "2023-10-15", time: "21:00", location: "Club de Jazz Blue Note", description: "Una noche de jazz suave con artistas internacionales.", image: "/placeholder.svg?height=400&width=600" },
-    { id: 8, title: "Exposición de Fotografía", category: "Arte", date: "2023-10-20", time: "11:00", location: "Museo de la Fotografía", description: "Explora el mundo a través de los ojos de fotógrafos talentosos.", image: "/placeholder.svg?height=400&width=600" },
-    { id: 9, title: "Torneo de Tenis", category: "Deportes", date: "2023-10-25", time: "09:00", location: "Club de Tenis Municipal", description: "Ven a ver a los mejores tenistas locales competir por el título.", image: "/placeholder.svg?height=400&width=600" },
-  ]
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentEventIndex((prevIndex) => (prevIndex + 1) % latestEvents.length)
-    }, 5000) // Cambia cada 5 segundos
+    if (events.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentEventIndex((prevIndex) => (prevIndex + 1) % events.length)
+      }, 5000) // Cambia cada 5 segundos
 
-    return () => clearInterval(timer)
-  }, [])
+      return () => clearInterval(timer)
+    }
+  }, [events.length])
 
   const getVisibleEvents = () => {
-    const events = []
+    if (events.length === 0) return []
+    const visibleEvents = []
     for (let i = 0; i < 3; i++) {
-      const index = (currentEventIndex + i) % latestEvents.length
-      events.push(latestEvents[index])
+      const index = (currentEventIndex + i) % events.length
+      visibleEvents.push(events[index])
     }
-    return events
+    return visibleEvents
   }
 
   const openEventDetails = (event: Event) => {
@@ -144,6 +141,10 @@ export default function EventosUMSS() {
     ))
   }
 
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-screen">Cargando eventos...</div>
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-10 bg-background border-b border-border">
@@ -152,7 +153,7 @@ export default function EventosUMSS() {
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
             <span className="text-lg font-semibold">Eventos UMSS</span>
           </div>
-          <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-600" onClick={() => setIsLoginOpen(true)}>
+          <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
             <LogIn className="h-4 w-4 mr-2" />
             Login
           </Button>
@@ -271,7 +272,7 @@ export default function EventosUMSS() {
           <TabsContent value="add">
             <Card>
               <CardContent>
-                <h2 className="text-2xl font-bold text-center mb-6 mt-10">FORMULARIO PARA AGREGAR EVENTO</h2>
+                <h2 className="text-2xl font-bold text-center mb-6">FORMULARIO PARA AGREGAR EVENTO</h2>
                 <form onSubmit={handleSubmitNewEvent} className="space-y-4">
                   <div>
                     <Label htmlFor="image">Imagen del evento</Label>

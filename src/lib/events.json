@@ -1,0 +1,105 @@
+{
+    "events": [
+      {
+        "id": 1,
+        "title": "Concierto de Rock",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Música",
+        "date": "2023-09-15",
+        "time": "20:00",
+        "location": "Estadio Central",
+        "description": "Un increíble concierto de rock con las mejores bandas locales."
+      },
+      {
+        "id": 2,
+        "title": "Exposición de Arte Moderno",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Arte",
+        "date": "2023-09-20",
+        "time": "10:00",
+        "location": "Galería de Arte Municipal",
+        "description": "Descubre las últimas tendencias en arte moderno de artistas emergentes."
+      },
+      {
+        "id": 3,
+        "title": "Maratón de la Ciudad",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Deportes",
+        "date": "2023-09-25",
+        "time": "07:00",
+        "location": "Parque Central",
+        "description": "Participa en la maratón anual de la ciudad. ¡Corre por una buena causa!"
+      },
+      {
+        "id": 4,
+        "title": "Conferencia de IA",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Tecnología",
+        "date": "2023-09-30",
+        "time": "14:00",
+        "location": "Centro de Convenciones",
+        "description": "Expertos en IA discuten los últimos avances y sus implicaciones futuras."
+      },
+      {
+        "id": 5,
+        "title": "Festival Gastronómico",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Gastronomía",
+        "date": "2023-10-05",
+        "time": "12:00",
+        "location": "Plaza Mayor",
+        "description": "Degusta platos de todo el mundo en nuestro festival gastronómico anual."
+      },
+      {
+        "id": 6,
+        "title": "Estreno de Película",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Cine",
+        "date": "2023-10-10",
+        "time": "19:00",
+        "location": "Cine Metropolis",
+        "description": "Asiste al estreno de la película más esperada del año."
+      },
+      {
+        "id": 7,
+        "title": "Concierto de Jazz",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Música",
+        "date": "2023-10-15",
+        "time": "21:00",
+        "location": "Club de Jazz Blue Note",
+        "description": "Una noche de jazz suave con artistas internacionales."
+      },
+      {
+        "id": 8,
+        "title": "Exposición de Fotografía",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Arte",
+        "date": "2023-10-20",
+        "time": "11:00",
+        "location": "Museo de la Fotografía",
+        "description": "Explora el mundo a través de los ojos de fotógrafos talentosos."
+      },
+      {
+        "id": 9,
+        "title": "Torneo de Tenis",
+        "image": "/placeholder.svg?height=400&width=600",
+        "category": "Deportes",
+        "date": "2023-10-25",
+        "time": "09:00",
+        "location": "Club de Tenis Municipal",
+        "description": "Ven a ver a los mejores tenistas locales competir por el título."
+      },
+      {
+        "id": 10,
+        "title": "Lengua de Señas",
+        "image": "/imagenes/10.jpg",
+        "category": "Curso",
+        "date": "2024-10-07",
+        "time": "09:00",
+        "location": "CUADIS",
+        "description": "CURSO BÁSICO DE LENGUA DE SEÑAS"
+      }
+    ]
+  }
+  
