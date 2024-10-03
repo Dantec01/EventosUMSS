@@ -21,7 +21,6 @@ interface Event {
   location: string
   description: string
   image: string
-  userDescription?: string
   isSaved?: boolean
 }
 
@@ -101,12 +100,6 @@ export default function Home() {
     setActiveTab("events")
   }
 
-  const updateEventDescription = (description: string) => {
-    if (selectedEvent) {
-      setSelectedEvent({...selectedEvent, userDescription: description})
-    }
-  }
-
   const handleNewEventChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setNewEvent(prev => ({ ...prev, [name]: value }))
@@ -150,10 +143,10 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-background border-b border-border">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-8 h-8" />
             <span className="text-lg font-semibold">Eventos UMSS</span>
           </div>
-          <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
+          <Button size="sm" variant="ghost" className="bg-green-200 hover:bg-green-300" onClick={() => setIsLoginOpen(true)}>
             <LogIn className="h-4 w-4 mr-2" />
             Login
           </Button>
@@ -258,16 +251,18 @@ export default function Home() {
             </div>
           </TabsContent>
           <TabsContent value="calendar">
-            <Card>
-              <CardContent className="p-0">
-                <Calendar
+            <div className="flex justify-center">
+              <Card className="w-full max-w-md">
+                <CardContent className="p-0 flex justify-center">
+                  <Calendar
                   mode="single"
                   selected={date}
                   onSelect={setDate}
                   className="rounded-md border shadow"
-                />
-              </CardContent>
-            </Card>
+                  />
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
           <TabsContent value="add">
             <Card>
@@ -332,13 +327,6 @@ export default function Home() {
               <DialogDescription>
                 {selectedEvent.description}
               </DialogDescription>
-              <Textarea
-                className="mt-4"
-                placeholder="Añade tu descripción (máximo 1000 caracteres)"
-                value={selectedEvent.userDescription || ""}
-                onChange={(e) => updateEventDescription(e.target.value)}
-                maxLength={1000}
-              />
             </div>
           )}
         </DialogContent>
