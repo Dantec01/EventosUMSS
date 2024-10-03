@@ -9,7 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Search, Calendar as CalendarIcon, Clock, MapPin, LogIn, X, Plus, Upload, Heart } from "lucide-react"
+import { Search, Calendar as CalendarIcon, Clock, MapPin, LogIn, Heart } from "lucide-react"
+
+// Importa el archivo JSON desde src/lib/events.json
 import eventsData from '@/lib/events.json'
 
 interface Event {
@@ -31,7 +33,6 @@ interface Category {
 
 export default function Home() {
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [currentEventIndex, setCurrentEventIndex] = useState(0)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("categories")
@@ -46,53 +47,59 @@ export default function Home() {
     image: null as File | null,
   })
   const [events, setEvents] = useState<Event[]>([])
+  const [latestEvents, setLatestEvents] = useState<Event[]>([])
+  const [currentEventIndex, setCurrentEventIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [showSavedOnly, setShowSavedOnly] = useState(false)
 
   useEffect(() => {
-    setEvents(eventsData.events.map(event => ({ ...event, isSaved: false })))
-    setIsLoading(false)
+    //const fetchEvents = async () => {
+      const loadEvents = () => {
+      try {
+        // const response = await fetch('./src/lib/events.json')
+        // const data = await response.json()
+        //const allEvents = data.events.map((event: Event) => ({ ...event, isSaved: false }))
+        const allEvents = eventsData.events.map((event: Event) => ({ ...event, isSaved: false }))
+        setEvents(allEvents.sort((a: Event, b: Event) => new Date(b.date).getTime() - new Date(a.date).getTime()))
+        setLatestEvents(allEvents.slice(-5).reverse())
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Error loading events:', error)
+        setIsLoading(false)
+      }
+    }
+
+    loadEvents()
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentEventIndex((prevIndex) => (prevIndex + 1) % 3)
+    }, 5000)
+    return () => clearInterval(timer)
   }, [])
 
   const categories: Category[] = [
-    { name: "Música", image: "/placeholder.svg?height=200&width=300" },
-    { name: "Arte", image: "/placeholder.svg?height=200&width=300" },
-    { name: "Deportes", image: "/placeholder.svg?height=200&width=300" },
-    { name: "Tecnología", image: "/placeholder.svg?height=200&width=300" },
-    { name: "Gastronomía", image: "/placeholder.svg?height=200&width=300" },
-    { name: "Cine", image: "/placeholder.svg?height=200&width=300" },
+    { name: "Música", image: "/placeholder.jpg" },
+    { name: "Cursos", image: "src/placeholder.svg?height=200&width=300" },
+    { name: "Deportes", image: "/src/placeholder.svg?height=200&width=300" },
+    { name: "Charlas", image: "./placeholder.svg?height=200&width=300" },
+    { name: "Talleres", image: "/images/placeholder.svg?height=200&width=300" },
+    { name: "OtrosS", image: "/placeholder.svg?height=200&width=300" },
   ]
-
-  useEffect(() => {
-    if (events.length > 0) {
-      const timer = setInterval(() => {
-        setCurrentEventIndex((prevIndex) => (prevIndex + 1) % events.length)
-      }, 5000) // Cambia cada 5 segundos
-
-      return () => clearInterval(timer)
-    }
-  }, [events.length])
-
-  const getVisibleEvents = () => {
-    if (events.length === 0) return []
-    const visibleEvents = []
-    for (let i = 0; i < 3; i++) {
-      const index = (currentEventIndex + i) % events.length
-      visibleEvents.push(events[index])
-    }
-    return visibleEvents
-  }
 
   const openEventDetails = (event: Event) => {
     setSelectedEvent(event)
   }
 
   const filteredEvents = events.filter(event => 
-    event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (showSavedOnly ? event.isSaved : true) &&
+    (event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.date.includes(searchTerm) ||
-    event.time.includes(searchTerm)
+    event.time.includes(searchTerm))
   )
 
   const handleSearch = (term: string) => {
@@ -114,7 +121,6 @@ export default function Home() {
 
   const handleSubmitNewEvent = (e: React.FormEvent) => {
     e.preventDefault()
-    // Aquí simularíamos el envío del formulario al correo del administrador
     console.log("Nuevo evento a enviar:", newEvent)
     alert("Evento enviado al administrador para revisión.")
     setNewEvent({
@@ -134,6 +140,10 @@ export default function Home() {
     ))
   }
 
+  const getVisibleEvents = () => {
+    return latestEvents.slice(currentEventIndex, currentEventIndex + 3)
+  }
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Cargando eventos...</div>
   }
@@ -143,10 +153,10 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-background border-b border-border">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-8 h-8" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
             <span className="text-lg font-semibold">Eventos UMSS</span>
           </div>
-          <Button size="sm" variant="ghost" className="bg-green-200 hover:bg-green-300" onClick={() => setIsLoginOpen(true)}>
+          <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
             <LogIn className="h-4 w-4 mr-2" />
             Login
           </Button>
@@ -159,9 +169,13 @@ export default function Home() {
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
-          <Button size="icon">
+          <Button size="icon" onClick={() => setShowSavedOnly(!showSavedOnly)}>
             <Search className="h-4 w-4" />
             <span className="sr-only">Buscar</span>
+          </Button>
+          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={() => setShowSavedOnly(!showSavedOnly)}>
+            <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
+            <span className="sr-only">Mostrar favoritos</span>
           </Button>
         </div>
       </header>
@@ -251,14 +265,14 @@ export default function Home() {
             </div>
           </TabsContent>
           <TabsContent value="calendar">
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center h-full">
               <Card className="w-full max-w-md">
                 <CardContent className="p-0 flex justify-center">
                   <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  className="rounded-md border shadow"
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    className="rounded-md border shadow"
                   />
                 </CardContent>
               </Card>
@@ -267,7 +281,7 @@ export default function Home() {
           <TabsContent value="add">
             <Card>
               <CardContent>
-                <h2 className="text-2xl font-bold text-center mb-6">FORMULARIO PARA AGREGAR EVENTO</h2>
+                <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
                 <form onSubmit={handleSubmitNewEvent} className="space-y-4">
                   <div>
                     <Label htmlFor="image">Imagen del evento</Label>

@@ -6,6 +6,7 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+	'./images/**/*.{ts,tsx}', // Agregada la carpeta de imágenesS
 	],
   theme: {
   	container: {

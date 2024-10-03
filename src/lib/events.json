@@ -14,7 +14,7 @@
         "id": 2,
         "title": "Exposición de Arte Moderno",
         "image": "/placeholder.svg?height=400&width=600",
-        "category": "Arte",
+        "category": "Otros",
         "date": "2023-09-20",
         "time": "10:00",
         "location": "Galería de Arte Municipal",
@@ -34,7 +34,7 @@
         "id": 4,
         "title": "Conferencia de IA",
         "image": "/placeholder.svg?height=400&width=600",
-        "category": "Tecnología",
+        "category": "Charlas",
         "date": "2023-09-30",
         "time": "14:00",
         "location": "Centro de Convenciones",
@@ -44,7 +44,7 @@
         "id": 5,
         "title": "Festival Gastronómico",
         "image": "/placeholder.svg?height=400&width=600",
-        "category": "Gastronomía",
+        "category": "Otros",
         "date": "2023-10-05",
         "time": "12:00",
         "location": "Plaza Mayor",
@@ -54,7 +54,7 @@
         "id": 6,
         "title": "Estreno de Película",
         "image": "/placeholder.svg?height=400&width=600",
-        "category": "Cine",
+        "category": "Talleres",
         "date": "2023-10-10",
         "time": "19:00",
         "location": "Cine Metropolis",
@@ -74,7 +74,7 @@
         "id": 8,
         "title": "Exposición de Fotografía",
         "image": "/placeholder.svg?height=400&width=600",
-        "category": "Arte",
+        "category": "Otros",
         "date": "2023-10-20",
         "time": "11:00",
         "location": "Museo de la Fotografía",
@@ -83,7 +83,7 @@
       {
         "id": 9,
         "title": "Torneo de Tenis",
-        "image": "/placeholder.svg?height=400&width=600",
+        "image": "/placeholder.jpg",
         "category": "Deportes",
         "date": "2023-10-25",
         "time": "09:00",
@@ -92,13 +92,15 @@
       },
       {
         "id": 10,
-        "title": "Lengua de Señas",
-        "image": "/imagenes/10.jpg",
-        "category": "Curso",
+        "title": "Lenguaje de Señas",
+        "image": "/src/images/placeholder.jpg",
+        "imageOriginalSize": true,
+        "category": "Cursos",
         "date": "2024-10-07",
         "time": "09:00",
         "location": "CUADIS",
-        "description": "CURSO BÁSICO DE LENGUA DE SEÑAS"
+        "description": "CURSO BÁSICO DE LENGUA DE SEÑAS",
+        "isSaved": true
       }
     ]
   }
