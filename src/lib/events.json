@@ -3,9 +3,9 @@
       {
         "id": 1,
         "title": "Concierto de Rock",
-        "image": "/placeholder.svg?height=400&width=600",
+        "image": "/images/placeholder.jpg",
         "category": "Música",
-        "date": "2023-09-15",
+        "date": "2024-09-15",
         "time": "20:00",
         "location": "Estadio Central",
         "description": "Un increíble concierto de rock con las mejores bandas locales."
@@ -15,7 +15,7 @@
         "title": "Exposición de Arte Moderno",
         "image": "/placeholder.svg?height=400&width=600",
         "category": "Otros",
-        "date": "2023-09-20",
+        "date": "2024-09-20",
         "time": "10:00",
         "location": "Galería de Arte Municipal",
         "description": "Descubre las últimas tendencias en arte moderno de artistas emergentes."
@@ -25,7 +25,7 @@
         "title": "Maratón de la Ciudad",
         "image": "/placeholder.svg?height=400&width=600",
         "category": "Deportes",
-        "date": "2023-09-25",
+        "date": "2024-09-25",
         "time": "07:00",
         "location": "Parque Central",
         "description": "Participa en la maratón anual de la ciudad. ¡Corre por una buena causa!"
@@ -35,7 +35,7 @@
         "title": "Conferencia de IA",
         "image": "/placeholder.svg?height=400&width=600",
         "category": "Charlas",
-        "date": "2023-09-30",
+        "date": "2024-09-30",
         "time": "14:00",
         "location": "Centro de Convenciones",
         "description": "Expertos en IA discuten los últimos avances y sus implicaciones futuras."
@@ -45,7 +45,7 @@
         "title": "Festival Gastronómico",
         "image": "/placeholder.svg?height=400&width=600",
         "category": "Otros",
-        "date": "2023-10-05",
+        "date": "2024-10-05",
         "time": "12:00",
         "location": "Plaza Mayor",
         "description": "Degusta platos de todo el mundo en nuestro festival gastronómico anual."
@@ -55,7 +55,7 @@
         "title": "Estreno de Película",
         "image": "/placeholder.svg?height=400&width=600",
         "category": "Talleres",
-        "date": "2023-10-10",
+        "date": "2024-10-10",
         "time": "19:00",
         "location": "Cine Metropolis",
         "description": "Asiste al estreno de la película más esperada del año."
@@ -65,7 +65,7 @@
         "title": "Concierto de Jazz",
         "image": "/placeholder.svg?height=400&width=600",
         "category": "Música",
-        "date": "2023-10-15",
+        "date": "2024-10-15",
         "time": "21:00",
         "location": "Club de Jazz Blue Note",
         "description": "Una noche de jazz suave con artistas internacionales."
@@ -75,7 +75,7 @@
         "title": "Exposición de Fotografía",
         "image": "/placeholder.svg?height=400&width=600",
         "category": "Otros",
-        "date": "2023-10-20",
+        "date": "2024-10-20",
         "time": "11:00",
         "location": "Museo de la Fotografía",
         "description": "Explora el mundo a través de los ojos de fotógrafos talentosos."
@@ -85,7 +85,7 @@
         "title": "Torneo de Tenis",
         "image": "/placeholder.jpg",
         "category": "Deportes",
-        "date": "2023-10-25",
+        "date": "2024-10-25",
         "time": "09:00",
         "location": "Club de Tenis Municipal",
         "description": "Ven a ver a los mejores tenistas locales competir por el título."
@@ -93,7 +93,7 @@
       {
         "id": 10,
         "title": "Lenguaje de Señas",
-        "image": "/src/images/placeholder.jpg",
+        "image": "/images/10.jpg?height=400&width=600",
         "imageOriginalSize": true,
         "category": "Cursos",
         "date": "2024-10-07",

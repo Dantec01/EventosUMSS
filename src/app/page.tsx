@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Search, Calendar as CalendarIcon, Clock, MapPin, LogIn, Heart } from "lucide-react"
+//import './globals.css'
 
 // Importa el archivo JSON desde src/lib/events.json
 import eventsData from '@/lib/events.json'
@@ -64,7 +65,7 @@ export default function Home() {
         setLatestEvents(allEvents.slice(-5).reverse())
         setIsLoading(false)
       } catch (error) {
-        console.error('Error loading events:', error)
+        console.error('Error cargando eventos:', error)
         setIsLoading(false)
       }
     }
@@ -80,12 +81,12 @@ export default function Home() {
   }, [])
 
   const categories: Category[] = [
-    { name: "Música", image: "/placeholder.jpg" },
-    { name: "Cursos", image: "src/placeholder.svg?height=200&width=300" },
-    { name: "Deportes", image: "/src/placeholder.svg?height=200&width=300" },
-    { name: "Charlas", image: "./placeholder.svg?height=200&width=300" },
-    { name: "Talleres", image: "/images/placeholder.svg?height=200&width=300" },
-    { name: "OtrosS", image: "/placeholder.svg?height=200&width=300" },
+    { name: "Música", image: "/images/placeholder.jpg" },
+    { name: "Cursos", image: "/images/placeholder.jpg?height=200&width=300" },
+    { name: "Deportes", image: "/images/placeholder.jpg?height=200&width=300" },
+    { name: "Charlas", image: "/images/placeholder.jpg?height=200&width=300" },
+    { name: "Talleres", image: "/images/placeholder.jpg?height=200&width=300" },
+    { name: "Otros", image: "/images/placeholder.jpg?height=200&width=300" },
   ]
 
   const openEventDetails = (event: Event) => {
@@ -94,6 +95,7 @@ export default function Home() {
 
   const filteredEvents = events.filter(event => 
     (showSavedOnly ? event.isSaved : true) &&
+    (selectedCategory ? event.category === selectedCategory : true) &&
     (event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -144,17 +146,27 @@ export default function Home() {
     return latestEvents.slice(currentEventIndex, currentEventIndex + 3)
   }
 
+  const toggleShowSavedOnly = () => {
+    setShowSavedOnly(!showSavedOnly)
+    setActiveTab("events")
+  }
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category)
+    setActiveTab("events")
+  }
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Cargando eventos...</div>
   }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-10 bg-background border-b border-border">
+      <header className="sticky top-0 z-10 bg-gradient-to-r from-red-500 to-blue-500 border-b border-border">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
-            <span className="text-lg font-semibold">Eventos UMSS</span>
+            <span className="text-lg font-semibold text-white">Eventos UMSS</span>
           </div>
           <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
             <LogIn className="h-4 w-4 mr-2" />
@@ -165,15 +177,15 @@ export default function Home() {
           <Input 
             type="search" 
             placeholder="Buscar eventos..." 
-            className="flex-grow" 
+            className="flex-grow bg-white" 
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
-          <Button size="icon" onClick={() => setShowSavedOnly(!showSavedOnly)}>
+          <Button size="icon" onClick={() => handleSearch(searchTerm)}>
             <Search className="h-4 w-4" />
             <span className="sr-only">Buscar</span>
           </Button>
-          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={() => setShowSavedOnly(!showSavedOnly)}>
+          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={toggleShowSavedOnly}>
             <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
             <span className="sr-only">Mostrar favoritos</span>
           </Button>
@@ -194,7 +206,7 @@ export default function Home() {
                 <Card 
                   key={category.name} 
                   className="cursor-pointer overflow-hidden"
-                  onClick={() => setSelectedCategory(category.name)}
+                  onClick={() => handleCategoryClick(category.name)}
                 >
                   <CardContent className="p-0 relative h-32">
                     <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
@@ -279,7 +291,7 @@ export default function Home() {
             </div>
           </TabsContent>
           <TabsContent value="add">
-            <Card>
+            <Card className="bg-gray-100">
               <CardContent>
                 <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
                 <form onSubmit={handleSubmitNewEvent} className="space-y-4">
@@ -318,13 +330,13 @@ export default function Home() {
       </main>
 
       <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>{selectedEvent?.title}</DialogTitle>
           </DialogHeader>
           {selectedEvent && (
             <div className="mt-2">
-              <img src={selectedEvent.image} alt={selectedEvent.title} className="w-full h-48 object-cover rounded-md mb-4" />
+              <img src={selectedEvent.image} alt={selectedEvent.title} className="w-full object-contain max-h-[60vh] rounded-md mb-4" />
               <p className="text-sm text-muted-foreground mb-2">{selectedEvent.category}</p>
               <div className="flex items-center mb-2 text-sm">
                 <CalendarIcon className="h-4 w-4 mr-2" />
