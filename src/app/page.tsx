@@ -9,7 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Search, Calendar as CalendarIcon, Clock, MapPin, LogIn, Heart } from "lucide-react"
+import { Search, Calendar as CalendarIcon, Clock, MapPin, LogIn, Heart, ArrowLeft, ChevronDown } from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 //import './globals.css'
 
 // Importa el archivo JSON desde src/lib/events.json
@@ -153,7 +161,32 @@ export default function Home() {
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category)
-    setActiveTab("events")
+  }
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null)
+  }
+
+  const handleShowAllEvents = () => {
+    setShowSavedOnly(false)
+  }
+
+  const getSavedEventDates = () => {
+    return events
+      .filter(event => event.isSaved)
+      .map(event => new Date(event.date))
+  }
+
+  const getEventsForCurrentMonth = () => {
+    if (!date) return []
+    const currentMonth = date.getMonth()
+    const currentYear = date.getFullYear()
+    return events.filter(event => {
+      const eventDate = new Date(event.date)
+      return eventDate.getMonth() === currentMonth && 
+             eventDate.getFullYear() === currentYear &&
+             event.isSaved
+    })
   }
 
   if (isLoading) {
@@ -162,7 +195,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-10 bg-gradient-to-r from-red-500 to-blue-500 border-b border-border">
+      <header className="sticky top-0 z-10 bg-gradient-to-r from-red-500 to-blue-500 border-b border-border rounded-b-lg">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
@@ -185,76 +218,209 @@ export default function Home() {
             <Search className="h-4 w-4" />
             <span className="sr-only">Buscar</span>
           </Button>
-          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={toggleShowSavedOnly}>
+          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={toggleShowSavedOnly}className={showSavedOnly ? "hover:bg-red-500" : "hover:bg-red-500"}>
             <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
             <span className="sr-only">Mostrar favoritos</span>
           </Button>
         </div>
       </header>
 
-      <main className="p-4 space-y-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="categories" className="flex-grow">Categorías</TabsTrigger>
-            <TabsTrigger value="events" className="flex-grow">Eventos</TabsTrigger>
-            <TabsTrigger value="calendar" className="flex-grow">Calendario</TabsTrigger>
-            <TabsTrigger value="add" className="flex-grow">Agregar</TabsTrigger>
-          </TabsList>
-          <TabsContent value="categories">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-              {categories.map((category) => (
-                <Card 
-                  key={category.name} 
-                  className="cursor-pointer overflow-hidden"
-                  onClick={() => handleCategoryClick(category.name)}
-                >
-                  <CardContent className="p-0 relative h-32">
-                    <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                      <h3 className="text-white text-lg font-semibold">{category.name}</h3>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <section aria-label="Últimos eventos" className="mt-6">
-              <h2 className="text-lg font-semibold mb-2">Últimos eventos</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {getVisibleEvents().map((event) => (
+      <main className="p-4 space-y-6 bg-gray-100">
+        {!selectedCategory && (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-red-500 to-blue-500">
+              <TabsTrigger value="categories" className="flex-grow text-white">Categorías</TabsTrigger>
+              <TabsTrigger value="events" className="flex-grow text-white">Eventos</TabsTrigger>
+              <TabsTrigger value="calendar" className="flex-grow text-white">Calendario</TabsTrigger>
+              <TabsTrigger value="add" className="flex-grow text-white">Agregar</TabsTrigger>
+            </TabsList>
+            <TabsContent value="categories">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                {categories.map((category) => (
                   <Card 
-                    key={event.id} 
-                    className="overflow-hidden transition-all duration-500 ease-in-out cursor-pointer hover:shadow-lg"
-                    onClick={() => openEventDetails(event)}
+                    key={category.name} 
+                    className="cursor-pointer overflow-hidden"
+                    onClick={() => handleCategoryClick(category.name)}
                   >
-                    <CardContent className="p-0 relative h-48">
-                      <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black bg-opacity-50 p-4 flex flex-col justify-end">
-                        <h3 className="font-semibold text-white">{event.title}</h3>
-                        <p className="text-sm text-gray-200">{event.category}</p>
-                        <div className="flex items-center mt-2 text-sm text-gray-200">
-                          <CalendarIcon className="h-4 w-4 mr-2" />
-                          {event.date}
-                        </div>
-                        <div className="flex items-center mt-1 text-sm text-gray-200">
-                          <Clock className="h-4 w-4 mr-2" />
-                          {event.time}
-                        </div>
+                    <CardContent className="p-0 relative h-32">
+                      <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <h3 className="text-white text-lg font-semibold">{category.name}</h3>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </section>
-          </TabsContent>
-          <TabsContent value="events">
-            <div className="space-y-4 mt-4">
+              <section aria-label="Últimos eventos" className="mt-6">
+                <h2 className="text-lg font-semibold mb-2">Últimos eventos</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {getVisibleEvents().map((event) => (
+                    <Card 
+                      key={event.id} 
+                      className="overflow-hidden transition-all duration-500 ease-in-out cursor-pointer hover:shadow-lg"
+                      onClick={() => openEventDetails(event)}
+                    >
+                      <CardContent className="p-0 relative h-48">
+                        <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black bg-opacity-50 p-4 flex flex-col justify-end">
+                          <h3 className="font-semibold text-white">{event.title}</h3>
+                          <p className="text-sm text-gray-200">{event.category}</p>
+                          <div className="flex items-center mt-2 text-sm text-gray-200">
+                            <CalendarIcon className="h-4 w-4 mr-2" />
+                            {event.date}
+                          </div>
+                          <div className="flex items-center mt-1 text-sm text-gray-200">
+                            <Clock className="h-4 w-4 mr-2" />
+                            {event.time}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </section>
+            </TabsContent>
+            <TabsContent value="events">
+              {showSavedOnly && (
+                <div className="flex justify-center mt-4 mb-4">
+                  <Button onClick={handleShowAllEvents} className="bg-teal-500 hover:bg-teal-600 text-white">
+                    Mostrar todos los eventos
+                  </Button>
+                </div>
+              )}
+              <div className="space-y-2 mt-4">
+                {filteredEvents.map((event) => (
+                  <Card key={event.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-3 flex items-center justify-between">
+                      <div className="flex-grow cursor-pointer" onClick={() => openEventDetails(event)}>
+                        <h3 className="font-semibold">{event.title}</h3>
+                        <p className="text-sm text-muted-foreground">{event.category}</p>
+                        <div className="flex items-center mt-1 text-sm">
+                          <CalendarIcon className="h-4 w-4 mr-2" />
+                          {event.date}
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="ml-4"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleSaveEvent(event.id)
+                        }}
+                      >
+                        <Heart className={`h-6 w-6 ${event.isSaved ? 'fill-current text-red-500' : 'text-gray-400'}`} />
+                        <span className="sr-only">{event.isSaved ? 'Quitar de favoritos' : 'Agregar a favoritos'}</span>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="calendar">
+              <div className="flex flex-col md:flex-row gap-4">
+                <Card className="w-full md:w-1/2">
+                  <CardContent className="p-0 flex justify-center">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      className="rounded-md border shadow"
+                      modifiers={{
+                        saved: getSavedEventDates(),
+                      }}
+                      modifiersStyles={{
+                        saved: { backgroundColor: 'rgba(239, 68, 68, 0.5)' },
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+                <Card className="w-full md:w-1/2">
+                  <CardContent>
+                    <h3 className="text-lg  font-semibold mb-4">Eventos favoritos del mes</h3>
+                    <div className="space-y-2">
+                      {getEventsForCurrentMonth().map((event) => (
+                        <div key={event.id} className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">{event.title}</p>
+                            <p className="text-sm text-muted-foreground">{event.date}</p>
+                          </div>
+                          <Button variant="outline" size="sm" onClick={() => openEventDetails(event)}>
+                            Ver detalles
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            <TabsContent value="add">
+              <Card className="bg-white">
+                <CardContent>
+                  <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
+                  <form onSubmit={handleSubmitNewEvent} className="space-y-4">
+                    <div>
+                      <Label htmlFor="image">Imagen del evento</Label>
+                      <Input id="image" type="file" accept="image/*" onChange={handleImageUpload} />
+                    </div>
+                    <div>
+                      <Label htmlFor="title">Nombre del evento</Label>
+                      <Input id="title" name="title" value={newEvent.title} onChange={handleNewEventChange} required />
+                    </div>
+                    <div>
+                      <Label htmlFor="date">Fecha</Label>
+                      <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} required />
+                    </div>
+                    <div>
+                      <Label htmlFor="time">Hora</Label>
+                      <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} required />
+                    </div>
+                    <div>
+                      <Label htmlFor="location">Lugar</Label>
+                      <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} required />
+                    </div>
+                    <div>
+                      <Label htmlFor="description">Descripción</Label>
+                      <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} required />
+                    </div>
+                    <div className="flex justify-center">
+                      <Button type="submit">Enviar</Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        )}
+        
+        {selectedCategory && (
+          <div className="space-y-4">
+            <div className="flex justify-center items-center space-x-4">
+              <Button variant="outline" size="icon" onClick={handleBackToCategories} className="bg-teal-500 hover:bg-teal-600 text-white">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <Select value={selectedCategory} onValueChange={handleCategoryClick}>
+                <SelectTrigger className="w-[40%]">
+                  <SelectValue placeholder="Selecciona una categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.name} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold mb-4">Eventos de {selectedCategory}</h2>
               {filteredEvents.map((event) => (
                 <Card key={event.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4 flex items-center justify-between">
+                  <CardContent className="p-3 flex items-center justify-between">
                     <div className="flex-grow cursor-pointer" onClick={() => openEventDetails(event)}>
                       <h3 className="font-semibold">{event.title}</h3>
-                      <p className="text-sm text-muted-foreground">{event.category}</p>
-                      <div className="flex items-center mt-2 text-sm">
+                      <div className="flex items-center mt-1 text-sm">
                         <CalendarIcon className="h-4 w-4 mr-2" />
                         {event.date}
                       </div>
@@ -275,58 +441,16 @@ export default function Home() {
                 </Card>
               ))}
             </div>
-          </TabsContent>
-          <TabsContent value="calendar">
-            <div className="flex justify-center items-center h-full">
-              <Card className="w-full max-w-md">
-                <CardContent className="p-0 flex justify-center">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    className="rounded-md border shadow"
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value="add">
-            <Card className="bg-gray-100">
-              <CardContent>
-                <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
-                <form onSubmit={handleSubmitNewEvent} className="space-y-4">
-                  <div>
-                    <Label htmlFor="image">Imagen del evento</Label>
-                    <Input id="image" type="file" accept="image/*" onChange={handleImageUpload} />
-                  </div>
-                  <div>
-                    <Label htmlFor="title">Nombre del evento</Label>
-                    <Input id="title" name="title" value={newEvent.title} onChange={handleNewEventChange} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="date">Fecha</Label>
-                    <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="time">Hora</Label>
-                    <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="location">Lugar</Label>
-                    <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="description">Descripción</Label>
-                    <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} required />
-                  </div>
-                  <div className="flex justify-center">
-                    <Button type="submit">Enviar</Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
+        
+        {selectedCategory && (
+          <div className="flex justify-center mt-4">
+            <Button onClick={handleBackToCategories} className="bg-teal-500 hover:bg-teal-600 text-white">
+              Volver
+            </Button>
+          </div>
+        )}
       </main>
 
       <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
@@ -351,7 +475,11 @@ export default function Home() {
                 {selectedEvent.location}
               </div>
               <DialogDescription>
-                {selectedEvent.description}
+                {selectedEvent.description.split('\n').map((line, index) => (
+                  <p key={index} className="mb-2">
+                    {line.replace(/:\)/g, '😊').replace(/:\(/g, '😢').replace(/<3/g, '❤️')}
+                  </p>
+                ))}
               </DialogDescription>
             </div>
           )}
