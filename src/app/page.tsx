@@ -89,12 +89,12 @@ export default function Home() {
   }, [])
 
   const categories: Category[] = [
-    { name: "Música", image: "/images/placeholder.jpg" },
-    { name: "Cursos", image: "/images/placeholder.jpg?height=200&width=300" },
-    { name: "Deportes", image: "/images/placeholder.jpg?height=200&width=300" },
-    { name: "Charlas", image: "/images/placeholder.jpg?height=200&width=300" },
-    { name: "Talleres", image: "/images/placeholder.jpg?height=200&width=300" },
-    { name: "Otros", image: "/images/placeholder.jpg?height=200&width=300" },
+    { name: "Música", image: "/images/musica.webp" },
+    { name: "Cursos", image: "/images/cursos.jpg?height=200&width=300" },
+    { name: "Deportes", image: "/images/deportes.jpg?height=200&width=300" },
+    { name: "Charlas", image: "/images/charlas.png?height=200&width=300" },
+    { name: "Talleres", image: "/images/talleres.jpg?height=200&width=300" },
+    { name: "Otros", image: "/images/otros.jpg?height=200&width=300" },
   ]
 
   const openEventDetails = (event: Event) => {
@@ -218,7 +218,7 @@ export default function Home() {
             <Search className="h-4 w-4" />
             <span className="sr-only">Buscar</span>
           </Button>
-          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={toggleShowSavedOnly}className={showSavedOnly ? "hover:bg-red-500" : "hover:bg-red-500"}>
+          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={toggleShowSavedOnly}className={showSavedOnly ? "hover:bg-red-500" : ""}>
             <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
             <span className="sr-only">Mostrar favoritos</span>
           </Button>
@@ -356,33 +356,33 @@ export default function Home() {
               </div>
             </TabsContent>
             <TabsContent value="add">
-              <Card className="bg-white">
+              <Card className="bg-gray-200">
                 <CardContent>
                   <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
                   <form onSubmit={handleSubmitNewEvent} className="space-y-4">
                     <div>
                       <Label htmlFor="image">Imagen del evento</Label>
-                      <Input id="image" type="file" accept="image/*" onChange={handleImageUpload} />
+                      <Input id="image" type="file" accept="image/*" onChange={handleImageUpload} className="bg-white"  />
                     </div>
                     <div>
                       <Label htmlFor="title">Nombre del evento</Label>
-                      <Input id="title" name="title" value={newEvent.title} onChange={handleNewEventChange} required />
+                      <Input id="title" name="title" value={newEvent.title} onChange={handleNewEventChange} className="bg-white" required />
                     </div>
                     <div>
                       <Label htmlFor="date">Fecha</Label>
-                      <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} required />
+                      <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} className="bg-white" required />
                     </div>
                     <div>
                       <Label htmlFor="time">Hora</Label>
-                      <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} required />
+                      <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} className="bg-white" required />
                     </div>
                     <div>
                       <Label htmlFor="location">Lugar</Label>
-                      <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} required />
+                      <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} className="bg-white" required />
                     </div>
                     <div>
                       <Label htmlFor="description">Descripción</Label>
-                      <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} required />
+                      <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} className="bg-white" required />
                     </div>
                     <div className="flex justify-center">
                       <Button type="submit">Enviar</Button>
@@ -454,7 +454,7 @@ export default function Home() {
       </main>
 
       <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{selectedEvent?.title}</DialogTitle>
           </DialogHeader>

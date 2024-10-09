@@ -3,104 +3,102 @@
       {
         "id": 1,
         "title": "Concierto de Rock",
-        "image": "/images/placeholder.jpg",
+        "image": "/images/1.jpg",
         "category": "Música",
-        "date": "2024-09-15",
+        "date": "2024-09-22",
         "time": "20:00",
-        "location": "Estadio Central",
+        "location": "Coliseo UMSS",
         "description": "Un increíble concierto de rock con las mejores bandas locales."
       },
       {
         "id": 2,
-        "title": "Exposición de Arte Moderno",
-        "image": "/placeholder.svg?height=400&width=600",
+        "title": "Capacitacion pada CTFs",
+        "image": "/images/2.jpg",
         "category": "Otros",
-        "date": "2024-09-20",
+        "date": "2024-11-07",
         "time": "10:00",
-        "location": "Galería de Arte Municipal",
-        "description": "Descubre las últimas tendencias en arte moderno de artistas emergentes."
+        "location": "Informatica",
+        "description": "📌  𝘌𝘭 𝘋𝘦𝘱𝘢𝘳𝘵𝘢𝘮𝘦𝘯𝘵𝘰 𝘥𝘦 𝘐𝘯𝘧𝘰𝘳𝘮á𝘵𝘪𝘤𝘢 𝘺 𝘚𝘪𝘴𝘵𝘦𝘮𝘢𝘴, 𝘰𝘧𝘦𝘳𝘵𝘢 𝘊𝘶𝘳𝘴𝘰𝘴 𝘥𝘦 𝘍𝘰𝘳𝘮𝘢𝘤𝘪ó𝘯 𝘤𝘰𝘯𝘵𝘪𝘯𝘶𝘢.\n\n𝘊𝘶𝘳𝘴𝘰: Visual Basic\n📅 𝘐𝘯𝘪𝘤𝘪𝘰 𝘥𝘦 𝘊𝘭𝘢𝘴𝘦𝘴: 14 de OCT\n⏰ 𝘏𝘰𝘳𝘢𝘳𝘪𝘰: 14:15 - 15:45 G1\n\n𝘊𝘶𝘳𝘴𝘰: Java Basico\n📅 𝘐𝘯𝘪𝘤𝘪𝘰 𝘥𝘦 𝘊𝘭𝘢𝘴𝘦𝘴: 14 𝘥𝘦 OCT\n⏰ 𝘏𝘰𝘳𝘢𝘳𝘪𝘰: 15:45 - 17:15 G1\n\n✅ 𝘔𝘰𝘥𝘢𝘭𝘪𝘥𝘢𝘥: 𝘗𝘳𝘦𝘴𝘦𝘯𝘤𝘪𝘢𝘭 💻\n⚠️ 𝘚𝘦 𝘰𝘵𝘰𝘳𝘨𝘢𝘳á 𝘊𝘌𝘙𝘛𝘐𝘍𝘐𝘊𝘈𝘋𝘖 𝘊𝘖𝘕 𝘝𝘈𝘓𝘖𝘙 𝘊𝘜𝘙𝘙𝘐𝘊𝘜𝘓𝘈𝘙\n📝 𝘐𝘯𝘴𝘤𝘳𝘪𝘱𝘤𝘪𝘰𝘯𝘦𝘴: 𝘓𝘢𝘣𝘰𝘳𝘢𝘵𝘰𝘳𝘪𝘰 𝘥𝘦 𝘊𝘰𝘮𝘱𝘶𝘵𝘰 𝘐𝘕𝘍-𝘚𝘐𝘚\n🗓️𝘋𝘶𝘳𝘢𝘤𝘪ó𝘯: 2 𝘴𝘦𝘮𝘢𝘯𝘢𝘴\n\n𝘔𝘢𝘺𝘰𝘳 𝘐𝘯𝘧𝘰𝘳𝘮𝘢𝘤𝘪ó𝘯: 𝘓𝘢𝘣𝘰𝘳𝘢𝘵𝘰𝘳𝘪𝘰 𝘥𝘦 𝘊ó𝘮𝘱𝘶𝘵𝘰 𝘐𝘕𝘍-𝘚𝘐𝘚\nFacebook: https://www.facebook.com/DptoInformaticaSistemas"
       },
       {
         "id": 3,
-        "title": "Maratón de la Ciudad",
-        "image": "/placeholder.svg?height=400&width=600",
+        "title": "Maratón de la UMSS",
+        "image": "/images/3.jpg",
         "category": "Deportes",
-        "date": "2024-09-25",
+        "date": "2024-09-27",
         "time": "07:00",
         "location": "Parque Central",
-        "description": "Participa en la maratón anual de la ciudad. ¡Corre por una buena causa!"
+        "description": "Participa en la maratón anual de la ciudad.:)¡Corre por una buena causa!"
       },
       {
         "id": 4,
-        "title": "Conferencia de IA",
-        "image": "/placeholder.svg?height=400&width=600",
-        "category": "Charlas",
-        "date": "2024-09-30",
-        "time": "14:00",
-        "location": "Centro de Convenciones",
-        "description": "Expertos en IA discuten los últimos avances y sus implicaciones futuras."
+        "title": "𝘊𝘶𝘳𝘴𝘰: Visual Basic y Java basico",
+        "image": "/images/4.jpg",
+        "category": "Cursos",
+        "date": "2024-10-14",
+        "time": "15:45 - 17:15",
+        "location": "𝘓𝘢𝘣𝘰𝘳𝘢𝘵𝘰𝘳𝘪𝘰 𝘥𝘦 𝘊𝘰𝘮𝘱𝘶𝘵𝘰 𝘐𝘕𝘍-𝘚𝘐𝘚",
+        "description": "📌  𝘌𝘭 𝘋𝘦𝘱𝘢𝘳𝘵𝘢𝘮𝘦𝘯𝘵𝘰 𝘥𝘦 𝘐𝘯𝘧𝘰𝘳𝘮á𝘵𝘪𝘤𝘢 𝘺 𝘚𝘪𝘴𝘵𝘦𝘮𝘢𝘴, 𝘰𝘧𝘦𝘳𝘵𝘢 𝘊𝘶𝘳𝘴𝘰𝘴 𝘥𝘦 𝘍𝘰𝘳𝘮𝘢𝘤𝘪ó𝘯 𝘤𝘰𝘯𝘵𝘪𝘯𝘶𝘢.\n\n𝘊𝘶𝘳𝘴𝘰: Visual Basic\n📅 𝘐𝘯𝘪𝘤𝘪𝘰 𝘥𝘦 𝘊𝘭𝘢𝘴𝘦𝘴: 14 de OCT\n⏰ 𝘏𝘰𝘳𝘢𝘳𝘪𝘰: 14:15 - 15:45 G1\n\n𝘊𝘶𝘳𝘴𝘰: Java Basico\n📅 𝘐𝘯𝘪𝘤𝘪𝘰 𝘥𝘦 𝘊𝘭𝘢𝘴𝘦𝘴: 14 𝘥𝘦 OCT\n⏰ 𝘏𝘰𝘳𝘢𝘳𝘪𝘰: 15:45 - 17:15 G1\n\n✅ 𝘔𝘰𝘥𝘢𝘭𝘪𝘥𝘢𝘥: 𝘗𝘳𝘦𝘴𝘦𝘯𝘤𝘪𝘢𝘭 💻\n⚠️ 𝘚𝘦 𝘰𝘵𝘰𝘳𝘨𝘢𝘳á 𝘊𝘌𝘙𝘛𝘐𝘍𝘐𝘊𝘈𝘋𝘖 𝘊𝘖𝘕 𝘝𝘈𝘓𝘖𝘙 𝘊𝘜𝘙𝘙𝘐𝘊𝘜𝘓𝘈𝘙\n📝 𝘐𝘯𝘴𝘤𝘳𝘪𝘱𝘤𝘪𝘰𝘯𝘦𝘴: 𝘓𝘢𝘣𝘰𝘳𝘢𝘵𝘰𝘳𝘪𝘰 𝘥𝘦 𝘊𝘰𝘮𝘱𝘶𝘵𝘰 𝘐𝘕𝘍-𝘚𝘐𝘚\n🗓️𝘋𝘶𝘳𝘢𝘤𝘪ó𝘯: 2 𝘴𝘦𝘮𝘢𝘯𝘢𝘴\nFacebook: https://www.facebook.com/DptoInformaticaSistemas"
       },
       {
         "id": 5,
-        "title": "Festival Gastronómico",
-        "image": "/placeholder.svg?height=400&width=600",
+        "title": "Capture the Flag",
+        "image": "/images/5.jpg",
         "category": "Otros",
         "date": "2024-10-05",
-        "time": "12:00",
-        "location": "Plaza Mayor",
-        "description": "Degusta platos de todo el mundo en nuestro festival gastronómico anual."
+        "time": "10:00 - 15:00",
+        "location": "LAB 3 INF-SIS (MEMI)",
+        "description": "Clasificatorio a la Competencia Nacional de Seguridad Informática\nCapture the Flag\n📅 Fecha: 05 de OCT\n🗓 Hora: 10:00 a 15:00\n📍 Lugar: LAB 3 INF-SIS (MEMI)\n\nCONVOCATORIA Y EL REGLAMENTO CAPTURE THE FLAG SIGUIENTE LINK:\nhttps://tinyurl.com/394ys5jk\n\nLeer atentamente la convocatoria.\n\n📝 Formulario de Registro: https://forms.gle/FqaNDwURsgraADMK9\n\n👥 El equipo debe estar conformado por 3 personas."
       },
       {
         "id": 6,
-        "title": "Estreno de Película",
-        "image": "/placeholder.svg?height=400&width=600",
-        "category": "Talleres",
+        "title": "CÓDIGO FEST",
+        "image": "/images/6.jpg",
+        "category": "Taller",
         "date": "2024-10-10",
         "time": "19:00",
-        "location": "Cine Metropolis",
-        "description": "Asiste al estreno de la película más esperada del año."
+        "location": "Auditorio",
+        "description": "Estás invitado/a a la conferencia anual, virtual y gratuita de Código Facilito: CÓDIGO FEST 2024\n\nObtén tu ticket virtual para el evento aquí: https://codigofacilito.com/fest/julioalirodriguez\nSerán 8 horas maratónicas, charlas con expertos de la industria, tendencias en el mundo del desarrollo, entrevistas con programadores destacados de toda Latinamérica, lo NUEVO en Código Facilito, regalos, sorpresas y más.\n\nCÓDIGO FEST será el 19 de Octubre a las:\n¡No te vayas a perder el evento del año hecho por y para desarrolladores!"
       },
       {
         "id": 7,
-        "title": "Concierto de Jazz",
-        "image": "/placeholder.svg?height=400&width=600",
-        "category": "Música",
-        "date": "2024-10-15",
-        "time": "21:00",
-        "location": "Club de Jazz Blue Note",
-        "description": "Una noche de jazz suave con artistas internacionales."
+        "title": " Ingeniería en Software",
+        "image": "/images/7.jpg",
+        "category": "Charlas",
+        "date": "2024-10-07",
+        "time": "10:00",
+        "location": "Salon amauta",
+        "description": "Te invitamos a ser parte de JALA UNIVERSITY dónde podrás realizar programas de Software Comercial.\n\nTe ofrecemos becas📊 (cupos limitados) para el programa de Ingeniería en Software en modalidad virtual🌐\n\nNo dejes pasar está oportunidad, y abre tus puertas al mundo !!🌎\n* Reunión Informativa\n* Lunes 07 de OCT\n* Hora: 10:00 a.m.\n* Lugar: Salon amauta\n\n¡Te esperamos!\n\n#JalaUniversity\n#UMSS\n\n•Alianza de Líderes en Formación Académica•\nPara más información únete a nuestro grupo de WhatsApp:\nhttps://chat.whatsapp.com/GN6qqVyXWuI1FALUnLo2wY"
       },
       {
         "id": 8,
-        "title": "Exposición de Fotografía",
-        "image": "/placeholder.svg?height=400&width=600",
-        "category": "Otros",
-        "date": "2024-10-20",
-        "time": "11:00",
+        "title": "Introducción a Google Earth Engine: ",
+        "image": "/images/8.jpg",
+        "category": "Cursos",
+        "date": "2024-10-14 -- 2024-10-25",
+        "time": "19:00 a 21:00",
         "location": "Museo de la Fotografía",
-        "description": "Explora el mundo a través de los ojos de fotógrafos talentosos."
+        "description": "🌍 Curso: Introducción a Google Earth Engine: Procesamiento y análisis de imágenes satelitales\n📅 Versión: Cuarta, gestión 2024\n💻 Modalidad: Virtual\n\nTe invitamos a participar en la cuarta versión de nuestro curso 🌍 Introducción a Google Earth Engine, enfocado en el procesamiento y análisis de imágenes satelitales. Aprovecha la oportunidad de adquirir habilidades en esta plataforma clave para el análisis geoespacial.\n\n📋 Detalles del curso:\n\n📆 Inicio y conclusión: Del 14 al 25 de octubre de 2024\n🕑 Horario de clases: Lunes a viernes, de 19:00 a 21:00\n⏳ Duración: 40 horas académicas, correspondientes a 1 crédito académico\n💵 Costo: Bs. 450 (cuatrocientos cincuenta 00/100 Bolivianos)\n👨‍🏫 Docente: Ing. Albert Hans Argote Adrian, M.Sc.\n\nAl finalizar el curso, recibirás un 📜 Certificado otorgado por el CLAS, perteneciente a la Universidad Mayor de San Simón.\n\n🔗 Enlaces importantes:\n\n💬 Únete al grupo de WhatsApp: https://chat.whatsapp.com/LBFHL51mgutJJhrMWW22SG\n📝 Reserva tu cupo llenando el formulario: https://forms.gle/hvXCYdmLKnGQxTex6\n\n📢 ¡No te pierdas esta excelente oportunidad para profundizar tus conocimientos en teledetección y análisis de datos geoespaciales!"
       },
       {
         "id": 9,
-        "title": "Torneo de Tenis",
-        "image": "/placeholder.jpg",
+        "title": "IEEEXtreme es la competencia global",
+        "image": "/images/9.jpg",
         "category": "Deportes",
-        "date": "2024-10-25",
+        "date": "2024-09-27",
         "time": "09:00",
-        "location": "Club de Tenis Municipal",
-        "description": "Ven a ver a los mejores tenistas locales competir por el título."
+        "location": "meet.google.com/utp-sctk-nwm",
+         "description": "IEEEXtreme es una competencia mundial de programación organizada por IEEE, donde equipos de estudiantes compiten durante 24 horas para resolver desafiantes problemas. La sesión informativa se llevará a cabo el viernes 27 de septiembre a las 20:30, donde se explicarán los requisitos, reglas y premios de la competencia. Es una oportunidad única para demostrar habilidades y estrategias a nivel global.\n\nLink de la reunión: meet.google.com/utp-sctk-nwm"
       },
       {
         "id": 10,
         "title": "Lenguaje de Señas",
-        "image": "/images/10.jpg?height=400&width=600",
-        "imageOriginalSize": true,
+        "image": "/images/10.jpg",
         "category": "Cursos",
         "date": "2024-10-07",
         "time": "09:00",
         "location": "CUADIS",
-        "description": "CURSO BÁSICO DE LENGUA DE SEÑAS",
-        "isSaved": true
+        "description": "CURSO BÁSICO DE LENGUA DE SEÑAS\n✅ DETALLES DEL EVENTO\n🗓️ DEL 7 DE OCTUBRE AL 18 DE OCTUBRE DE 2024\nModalidad presencial\n📝 Formulario de Registro:\nhttps://forms.gle/BohDS2E2QW1C4knN7\n👥 Grupo de WhatsApp:\nhttps://chat.whatsapp.com/FIIUxvoO6BsB1hYpxDJDTE\n📞 (+591) 70749235\nOrganizado por:\nCentro Universitario de atención a la discapacidad CUADIS\nUNIVERSIDAD MAYOR DE SAN SIMÓN"
       }
     ]
   }
