@@ -60,6 +60,7 @@ export default function Home() {
   const [currentEventIndex, setCurrentEventIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [showSavedOnly, setShowSavedOnly] = useState(false)
+  const [currentMonthEvents, setCurrentMonthEvents] = useState<Event[]>([])
 
   useEffect(() => {
     //const fetchEvents = async () => {
@@ -87,6 +88,11 @@ export default function Home() {
     }, 5000)
     return () => clearInterval(timer)
   }, [])
+
+  useEffect(() => {
+    setCurrentMonthEvents(getEventsForSelectedDate(date))
+    console.log('Actualizando eventos del mes:', date, events.filter(e => e.isSaved).length)
+  }, [date, events])
 
   const categories: Category[] = [
     { name: "Música", image: "/images/musica.webp" },
@@ -145,9 +151,13 @@ export default function Home() {
   }
 
   const toggleSaveEvent = (id: number) => {
-    setEvents(events.map(event => 
-      event.id === id ? { ...event, isSaved: !event.isSaved } : event
-    ))
+    setEvents(prevEvents => {
+      const updatedEvents = prevEvents.map(event => 
+        event.id === id ? { ...event, isSaved: !event.isSaved } : event
+      )
+      setCurrentMonthEvents(getEventsForSelectedDate(date, updatedEvents))
+      return updatedEvents
+    })
   }
 
   const getVisibleEvents = () => {
@@ -177,16 +187,35 @@ export default function Home() {
       .map(event => new Date(event.date))
   }
 
-  const getEventsForCurrentMonth = () => {
-    if (!date) return []
-    const currentMonth = date.getMonth()
-    const currentYear = date.getFullYear()
-    return events.filter(event => {
+  const getEventsForSelectedDate = (selectedDate: Date | undefined, eventsList = events) => {
+    if (!selectedDate) return []
+    const selectedMonth = selectedDate.getMonth()
+    const selectedYear = selectedDate.getFullYear()
+    const selectedDay = selectedDate.getDate()
+    return eventsList.filter(event => {
       const eventDate = new Date(event.date)
-      return eventDate.getMonth() === currentMonth && 
-             eventDate.getFullYear() === currentYear &&
-             event.isSaved
+      if (selectedDate.getHours() === 0 && selectedDate.getMinutes() === 0) {
+        // Si es una fecha seleccionada del calendario (sin hora específica)
+        return eventDate.getMonth() === selectedMonth && 
+               eventDate.getFullYear() === selectedYear && 
+               eventDate.getDate() === selectedDay &&
+               event.isSaved
+      } else {
+        // Si es el mes actual (fecha con hora)
+        return eventDate.getMonth() === selectedMonth && 
+               eventDate.getFullYear() === selectedYear && 
+               event.isSaved
+      }
     })
+  }
+
+  const handleDateSelect = (newDate: Date | undefined) => {
+    if (newDate) {
+      // Establecer la hora a medianoche para diferenciar entre selección de día y mes
+      newDate.setHours(0, 0, 0, 0)
+    }
+    setDate(newDate)
+    setCurrentMonthEvents(getEventsForSelectedDate(newDate))
   }
 
   if (isLoading) {
@@ -218,7 +247,12 @@ export default function Home() {
             <Search className="h-4 w-4" />
             <span className="sr-only">Buscar</span>
           </Button>
-          <Button size="icon" variant={showSavedOnly ? "default" : "outline"} onClick={toggleShowSavedOnly}className={showSavedOnly ? "hover:bg-red-500" : ""}>
+          <Button 
+            size="icon" 
+            variant={showSavedOnly ? "default" : "outline"} 
+            onClick={toggleShowSavedOnly}
+            className={showSavedOnly ? "hover:bg-red-500" : ""}
+          >
             <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
             <span className="sr-only">Mostrar favoritos</span>
           </Button>
@@ -294,7 +328,7 @@ export default function Home() {
                     <CardContent className="p-3 flex items-center justify-between">
                       <div className="flex-grow cursor-pointer" onClick={() => openEventDetails(event)}>
                         <h3 className="font-semibold">{event.title}</h3>
-                        <p className="text-sm text-muted-foreground">{event.category}</p>
+                        <p className="text-sm  text-muted-foreground">{event.category}</p>
                         <div className="flex items-center mt-1 text-sm">
                           <CalendarIcon className="h-4 w-4 mr-2" />
                           {event.date}
@@ -324,7 +358,7 @@ export default function Home() {
                     <Calendar
                       mode="single"
                       selected={date}
-                      onSelect={setDate}
+                      onSelect={handleDateSelect}
                       className="rounded-md border shadow"
                       modifiers={{
                         saved: getSavedEventDates(),
@@ -332,24 +366,34 @@ export default function Home() {
                       modifiersStyles={{
                         saved: { backgroundColor: 'rgba(239, 68, 68, 0.5)' },
                       }}
+                      defaultMonth={date}
                     />
                   </CardContent>
                 </Card>
                 <Card className="w-full md:w-1/2">
                   <CardContent>
-                    <h3 className="text-lg  font-semibold mb-4">Eventos favoritos del mes</h3>
+                    <h3 className="text-lg font-semibold mb-4">
+                      {date && date.getHours() === 0
+                        ? `Eventos favoritos del ${date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}`
+                        : `Eventos favoritos de ${date?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}`}
+                    </h3>
                     <div className="space-y-2">
-                      {getEventsForCurrentMonth().map((event) => (
+                      {currentMonthEvents.map((event) => (
                         <div key={event.id} className="flex items-center justify-between">
                           <div>
                             <p className="font-medium">{event.title}</p>
-                            <p className="text-sm text-muted-foreground">{event.date}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {new Date(event.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                            </p>
                           </div>
                           <Button variant="outline" size="sm" onClick={() => openEventDetails(event)}>
                             Ver detalles
                           </Button>
                         </div>
                       ))}
+                      {currentMonthEvents.length === 0 && (
+                        <p className="text-muted-foreground">No hay eventos favoritos para este mes.</p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
