@@ -90,9 +90,12 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    setCurrentMonthEvents(getEventsForSelectedDate(date))
-    console.log('Actualizando eventos del mes:', date, events.filter(e => e.isSaved).length)
-  }, [date, events])
+    if (events.length > 0) {
+      const today = new Date();
+      setDate(today);
+      setCurrentMonthEvents(getEventsForSelectedDate(today, events));
+    }
+  }, [events]);
 
   const categories: Category[] = [
     { name: "Música", image: "/images/musica.webp" },
@@ -188,35 +191,33 @@ export default function Home() {
   }
 
   const getEventsForSelectedDate = (selectedDate: Date | undefined, eventsList = events) => {
-    if (!selectedDate) return []
-    const selectedMonth = selectedDate.getMonth()
-    const selectedYear = selectedDate.getFullYear()
-    const selectedDay = selectedDate.getDate()
+    if (!eventsList) return [];
+    if (!selectedDate) return eventsList.filter(event => event.isSaved);
+    const selectedMonth = selectedDate.getMonth();
+    const selectedYear = selectedDate.getFullYear();
+    const selectedDay = selectedDate.getDate();
     return eventsList.filter(event => {
-      const eventDate = new Date(event.date)
-      if (selectedDate.getHours() === 0 && selectedDate.getMinutes() === 0) {
-        // Si es una fecha seleccionada del calendario (sin hora específica)
-        return eventDate.getMonth() === selectedMonth && 
-               eventDate.getFullYear() === selectedYear && 
-               eventDate.getDate() === selectedDay &&
-               event.isSaved
-      } else {
-        // Si es el mes actual (fecha con hora)
-        return eventDate.getMonth() === selectedMonth && 
-               eventDate.getFullYear() === selectedYear && 
-               event.isSaved
+      const eventDate = new Date(event.date);
+      if (eventDate.getMonth() === selectedMonth && eventDate.getFullYear() === selectedYear) {
+        if (selectedDay === eventDate.getDate() || selectedDate.getDate() === 1) {
+          return event.isSaved;
+        }
       }
-    })
-  }
+      return false;
+    });
+  };
 
   const handleDateSelect = (newDate: Date | undefined) => {
-    if (newDate) {
-      // Establecer la hora a medianoche para diferenciar entre selección de día y mes
-      newDate.setHours(0, 0, 0, 0)
-    }
-    setDate(newDate)
-    setCurrentMonthEvents(getEventsForSelectedDate(newDate))
-  }
+    setDate(newDate);
+    setCurrentMonthEvents(getEventsForSelectedDate(newDate, events));
+  };
+
+  const handleMonthChange = (newMonth: Date) => {
+    const firstDayOfMonth = new Date(newMonth.getFullYear(), newMonth.getMonth(), 1);
+    setDate(undefined);
+    setCurrentMonthEvents(getEventsForSelectedDate(firstDayOfMonth, events));
+  };
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Cargando eventos...</div>
@@ -359,6 +360,7 @@ export default function Home() {
                       mode="single"
                       selected={date}
                       onSelect={handleDateSelect}
+                      onMonthChange={handleMonthChange}
                       className="rounded-md border shadow"
                       modifiers={{
                         saved: getSavedEventDates(),
@@ -366,16 +368,17 @@ export default function Home() {
                       modifiersStyles={{
                         saved: { backgroundColor: 'rgba(239, 68, 68, 0.5)' },
                       }}
-                      defaultMonth={date}
+                      defaultMonth={new Date()}
+                      initialFocus
                     />
                   </CardContent>
                 </Card>
                 <Card className="w-full md:w-1/2">
                   <CardContent>
                     <h3 className="text-lg font-semibold mb-4">
-                      {date && date.getHours() === 0
+                      {date
                         ? `Eventos favoritos del ${date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}`
-                        : `Eventos favoritos de ${date?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}`}
+                        : `Eventos favoritos del mes`}
                     </h3>
                     <div className="space-y-2">
                       {currentMonthEvents.map((event) => (
