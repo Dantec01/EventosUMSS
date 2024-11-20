@@ -20,8 +20,8 @@ import {
 
 //import './globals.css'
 
-// Importa el archivo JSON desde src/lib/events.json
-import eventsData from '@/lib/events.json'
+// Eliminar la importación de eventsData
+// import eventsData from '@/lib/events.json'
 
 interface Event {
   id: number
@@ -63,23 +63,23 @@ export default function Home() {
   const [currentMonthEvents, setCurrentMonthEvents] = useState<Event[]>([])
 
   useEffect(() => {
-    //const fetchEvents = async () => {
-      const loadEvents = () => {
+    const loadEvents = async () => {
       try {
-        // const response = await fetch('./src/lib/events.json')
-        // const data = await response.json()
-        //const allEvents = data.events.map((event: Event) => ({ ...event, isSaved: false }))
-        const allEvents = eventsData.events.map((event: Event) => ({ ...event, isSaved: false }))
-        setEvents(allEvents.sort((a: Event, b: Event) => new Date(b.date).getTime() - new Date(a.date).getTime()))
-        setLatestEvents(allEvents.slice(-5).reverse())
-        setIsLoading(false)
+        const response = await fetch('/api/eventos');
+        const data = await response.json();
+        const allEvents = data.map((event: Event) => ({ ...event, isSaved: false }));
+        setEvents(
+          allEvents.sort((a: Event, b: Event) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        );
+        setLatestEvents(allEvents.slice(-5).reverse());
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error cargando eventos:', error)
-        setIsLoading(false)
+        console.error('Error cargando eventos:', error);
+        setIsLoading(false);
       }
-    }
+    };
 
-    loadEvents()
+    loadEvents();
   }, [])
 
   useEffect(() => {
