@@ -61,6 +61,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [showSavedOnly, setShowSavedOnly] = useState(false)
   const [currentMonthEvents, setCurrentMonthEvents] = useState<Event[]>([])
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -153,7 +155,11 @@ export default function Home() {
     setActiveTab("categories")
   }
 
-  const toggleSaveEvent = (id: number) => {
+  const toggleSaveEvent = async (id: number) => {
+    if (!isAuthenticated) {
+      alert('Por favor, inicia sesión para marcar eventos como favoritos.')
+      return
+    }
     setEvents(prevEvents => {
       const updatedEvents = prevEvents.map(event => 
         event.id === id ? { ...event, isSaved: !event.isSaved } : event
@@ -218,6 +224,12 @@ export default function Home() {
     setCurrentMonthEvents(getEventsForSelectedDate(firstDayOfMonth, events));
   };
 
+  const handleLogin = () => {
+    // Simulate login
+    setIsAuthenticated(true)
+    setToken('dummy-token')
+    setIsLoginOpen(false)
+  }
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Cargando eventos...</div>
@@ -231,10 +243,20 @@ export default function Home() {
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
             <span className="text-lg font-semibold text-white">Eventos UMSS</span>
           </div>
-          <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
-            <LogIn className="h-4 w-4 mr-2" />
-            Login
-          </Button>
+          {isAuthenticated ? (
+            <Button size="sm" variant="ghost" onClick={() => {
+              localStorage.removeItem('token')
+              setIsAuthenticated(false)
+              setToken(null)
+            }}>
+              Cerrar sesión
+            </Button>
+          ) : (
+            <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
+              <LogIn className="h-4 w-4 mr-2" />
+              Login
+            </Button>
+          )}
         </div>
         <div className="flex items-center space-x-2 p-4">
           <Input 
@@ -253,6 +275,7 @@ export default function Home() {
             variant={showSavedOnly ? "default" : "outline"} 
             onClick={toggleShowSavedOnly}
             className={showSavedOnly ? "hover:bg-red-500" : ""}
+            disabled={!isAuthenticated}
           >
             <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
             <span className="sr-only">Mostrar favoritos</span>
@@ -266,8 +289,8 @@ export default function Home() {
             <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-red-500 to-blue-500">
               <TabsTrigger value="categories" className="flex-grow text-white">Categorías</TabsTrigger>
               <TabsTrigger value="events" className="flex-grow text-white">Eventos</TabsTrigger>
-              <TabsTrigger value="calendar" className="flex-grow text-white">Calendario</TabsTrigger>
-              <TabsTrigger value="add" className="flex-grow text-white">Agregar</TabsTrigger>
+              <TabsTrigger value="calendar" className={`flex-grow text-white ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isAuthenticated}>Calendario</TabsTrigger>
+              <TabsTrigger value="add" className={`flex-grow text-white ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isAuthenticated}>Agregar</TabsTrigger>
             </TabsList>
             <TabsContent value="categories">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
@@ -343,6 +366,7 @@ export default function Home() {
                           e.stopPropagation()
                           toggleSaveEvent(event.id)
                         }}
+                        disabled={!isAuthenticated}
                       >
                         <Heart className={`h-6 w-6 ${event.isSaved ? 'fill-current text-red-500' : 'text-gray-400'}`} />
                         <span className="sr-only">{event.isSaved ? 'Quitar de favoritos' : 'Agregar a favoritos'}</span>
@@ -353,90 +377,102 @@ export default function Home() {
               </div>
             </TabsContent>
             <TabsContent value="calendar">
-              <div className="flex flex-col md:flex-row gap-4">
-                <Card className="w-full md:w-1/2">
-                  <CardContent className="p-0 flex justify-center">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={handleDateSelect}
-                      onMonthChange={handleMonthChange}
-                      className="rounded-md border shadow"
-                      modifiers={{
-                        saved: getSavedEventDates(),
-                      }}
-                      modifiersStyles={{
-                        saved: { backgroundColor: 'rgba(239, 68, 68, 0.5)' },
-                      }}
-                      defaultMonth={new Date()}
-                      initialFocus
-                    />
-                  </CardContent>
-                </Card>
-                <Card className="w-full md:w-1/2">
-                  <CardContent>
-                    <h3 className="text-lg font-semibold mb-4">
-                      {date
-                        ? `Eventos favoritos del ${date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}`
-                        : `Eventos favoritos del mes`}
-                    </h3>
-                    <div className="space-y-2">
-                      {currentMonthEvents.map((event) => (
-                        <div key={event.id} className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium">{event.title}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {new Date(event.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
-                            </p>
+              {isAuthenticated ? (
+                <div className="flex flex-col md:flex-row gap-4">
+                  <Card className="w-full md:w-1/2">
+                    <CardContent className="p-0 flex justify-center">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={handleDateSelect}
+                        onMonthChange={handleMonthChange}
+                        className="rounded-md border shadow"
+                        modifiers={{
+                          saved: getSavedEventDates(),
+                        }}
+                        modifiersStyles={{
+                          saved: { backgroundColor: 'rgba(239, 68, 68, 0.5)' },
+                        }}
+                        defaultMonth={new Date()}
+                        initialFocus
+                      />
+                    </CardContent>
+                  </Card>
+                  <Card className="w-full md:w-1/2">
+                    <CardContent>
+                      <h3 className="text-lg font-semibold mb-4">
+                        {date
+                          ? `Eventos favoritos del ${date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}`
+                          : `Eventos favoritos del mes`}
+                      </h3>
+                      <div className="space-y-2">
+                        {currentMonthEvents.map((event) => (
+                          <div key={event.id} className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{event.title}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(event.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                              </p>
+                            </div>
+                            <Button variant="outline" size="sm" onClick={() => openEventDetails(event)}>
+                              Ver detalles
+                            </Button>
                           </div>
-                          <Button variant="outline" size="sm" onClick={() => openEventDetails(event)}>
-                            Ver detalles
-                          </Button>
-                        </div>
-                      ))}
-                      {currentMonthEvents.length === 0 && (
-                        <p className="text-muted-foreground">No hay eventos favoritos para este mes.</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                        ))}
+                        {currentMonthEvents.length === 0 && (
+                          <p className="text-muted-foreground">No hay eventos favoritos para este mes.</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <div className="p-4">
+                  <p>Por favor, inicia sesión para ver el calendario.</p>
+                </div>
+              )}
             </TabsContent>
             <TabsContent value="add">
-              <Card className="bg-gray-200">
-                <CardContent>
-                  <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
-                  <form onSubmit={handleSubmitNewEvent} className="space-y-4">
-                    <div>
-                      <Label htmlFor="image">Imagen del evento</Label>
-                      <Input id="image" type="file" accept="image/*" onChange={handleImageUpload} className="bg-white"  />
-                    </div>
-                    <div>
-                      <Label htmlFor="title">Nombre del evento</Label>
-                      <Input id="title" name="title" value={newEvent.title} onChange={handleNewEventChange} className="bg-white" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="date">Fecha</Label>
-                      <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} className="bg-white" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="time">Hora</Label>
-                      <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} className="bg-white" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="location">Lugar</Label>
-                      <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} className="bg-white" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="description">Descripción</Label>
-                      <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} className="bg-white" required />
-                    </div>
-                    <div className="flex justify-center">
-                      <Button type="submit">Enviar</Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
+              {isAuthenticated ? (
+                <Card className="bg-gray-200">
+                  <CardContent>
+                    <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
+                    <form onSubmit={handleSubmitNewEvent} className="space-y-4">
+                      <div>
+                        <Label htmlFor="image">Imagen del evento</Label>
+                        <Input id="image" type="file" accept="image/*" onChange={handleImageUpload} className="bg-white"  />
+                      </div>
+                      <div>
+                        <Label htmlFor="title">Nombre del evento</Label>
+                        <Input id="title" name="title" value={newEvent.title} onChange={handleNewEventChange} className="bg-white" required />
+                      </div>
+                      <div>
+                        <Label htmlFor="date">Fecha</Label>
+                        <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} className="bg-white" required />
+                      </div>
+                      <div>
+                        <Label htmlFor="time">Hora</Label>
+                        <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} className="bg-white" required />
+                      </div>
+                      <div>
+                        <Label htmlFor="location">Lugar</Label>
+                        <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} className="bg-white" required />
+                      </div>
+                      <div>
+                        <Label htmlFor="description">Descripción</Label>
+                        <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} className="bg-white" required />
+                      </div>
+                      <div className="flex justify-center">
+                        <Button type="submit">Enviar</Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="p-4">
+                  <p>Por favor, inicia sesión para agregar un evento.</p>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         )}
@@ -480,6 +516,7 @@ export default function Home() {
                         e.stopPropagation()
                         toggleSaveEvent(event.id)
                       }}
+                      disabled={!isAuthenticated}
                     >
                       <Heart className={`h-6 w-6 ${event.isSaved ? 'fill-current text-red-500' : 'text-gray-400'}`} />
                       <span className="sr-only">{event.isSaved ? 'Quitar de favoritos' : 'Agregar a favoritos'}</span>
@@ -541,7 +578,7 @@ export default function Home() {
           <div className="grid gap-4 py-4">
             <Input id="email" placeholder="Correo electrónico" />
             <Input id="password" type="password" placeholder="Contraseña" />
-            <Button>Iniciar sesión</Button>
+            <Button onClick={handleLogin}>Iniciar sesión</Button>
           </div>
         </DialogContent>
       </Dialog>
