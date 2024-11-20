@@ -1,4 +1,6 @@
-# EventosUMSS
+# Nota: Actualmente el mayor avance esta en la rama "pruebas"  
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+# EventosUMSS  
 Pagina web para los eventos de la UMSS enfocada en mobile first
 
 **EventosUMSS** es una página web enfocada en un diseño **mobile-first** que permite a los estudiantes y usuarios de la **Universidad Mayor de San Simón** consultar y gestionar eventos como cursos, talleres y actividades extracurriculares de todas las facultades y carreras.
@@ -16,10 +18,14 @@ Pagina web para los eventos de la UMSS enfocada en mobile first
 ## Tecnologías
 
 ### Frontend
-- **React** (provisional): Se planea utilizar React para crear una interfaz dinámica y responsiva, centrada en una experiencia **mobile-first**.
+- **Next.js** es un framework React para crear aplicaciones web full stack completas. Utiliza React Components para crear interfaces de usuario y Next.js para funciones y optimizaciones adicionales.
 
 ### Backend
-- **Pendiente de decidir**: El backend se diseñará con un enfoque en la simplicidad, priorizando la eficiencia y la fácil integración con el frontend.
+- **Next.js**: Las API Routes en Next.js permiten crear endpoints backend directamente dentro de una aplicación Next.js.
+
+### Base de datos
+
+- **Postgres**: PostgreSQL, también llamado Postgres, es un sistema de gestión de bases de datos relacional orientado a objetos y de código abierto.
 
 ## Funcionalidades futuras
 
@@ -27,19 +33,23 @@ Pagina web para los eventos de la UMSS enfocada en mobile first
 - **Integración con calendarios externos** (Google Calendar, Outlook, etc.) para sincronización de eventos.
 - **Módulo de sugerencias de eventos** basado en las preferencias del usuario.
 
-## UI inicial
+## UI 
 
-![image](https://github.com/user-attachments/assets/92dce830-ca93-47e0-b10e-a75e2a706069)
+![home](https://github.com/user-attachments/assets/3d2d0338-5999-4d03-a7c1-8d712317b786)
 
-![image](https://github.com/user-attachments/assets/61c666b1-3df1-409b-92a4-e9e77f4e046c)
+![eventos](https://github.com/user-attachments/assets/bca96ec0-de2c-4d52-adb9-d559bd131f1f)
 
-![image](https://github.com/user-attachments/assets/6a740654-8cbe-456b-942f-9086d4a59f69)
+![calendario](https://github.com/user-attachments/assets/ef8168cb-f2f0-4907-9122-dfa980a2d39c)
 
-![image](https://github.com/user-attachments/assets/2b95da35-a565-4832-b530-5b4b54060b17)
+![formulario](https://github.com/user-attachments/assets/0e5ded2d-a1c4-48a1-8a16-712346b564bf)
 
 ## Diagrama ER base de datos
 
-![diagrama ER](https://github.com/user-attachments/assets/e91f9e96-4852-4bde-a18f-b19d226747af)
+![diagrama er](https://github.com/user-attachments/assets/5399aa71-e60e-4b3a-927f-afa9db1c8dd4)
+
+## Base de datos
+
+![base de datos](https://github.com/user-attachments/assets/5422c0b4-6dd6-483d-9357-3986a8bb4c80)
 
 ## Licencia
 
