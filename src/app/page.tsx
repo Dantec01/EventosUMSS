@@ -40,6 +40,11 @@ interface Category {
   image: string
 }
 
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('es-ES', options);
+}
+
 export default function Home() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -63,6 +68,7 @@ export default function Home() {
   const [currentMonthEvents, setCurrentMonthEvents] = useState<Event[]>([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [token, setToken] = useState<string | null>(null)
+  const [loginError, setLoginError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -98,6 +104,14 @@ export default function Home() {
       setCurrentMonthEvents(getEventsForSelectedDate(today, events));
     }
   }, [events]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const categories: Category[] = [
     { name: "Música", image: "/images/musica.webp" },
@@ -224,11 +238,34 @@ export default function Home() {
     setCurrentMonthEvents(getEventsForSelectedDate(firstDayOfMonth, events));
   };
 
-  const handleLogin = () => {
-    // Simulate login
-    setIsAuthenticated(true)
-    setToken('dummy-token')
-    setIsLoginOpen(false)
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: (document.getElementById('email') as HTMLInputElement).value,
+          password: (document.getElementById('password') as HTMLInputElement).value,
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        setLoginError(errorData.error);
+        return;
+      }
+  
+      const data = await response.json();
+      localStorage.setItem('token', data.token); // Guardar token en localStorage
+      setIsAuthenticated(true);
+      setToken(data.token);
+      setIsLoginOpen(false);
+      setLoginError(null);
+    } catch (error) {
+      setLoginError('Error al iniciar sesión. Por favor, inténtelo de nuevo.');
+    }
   }
 
   if (isLoading) {
@@ -249,7 +286,7 @@ export default function Home() {
               setIsAuthenticated(false)
               setToken(null)
             }}>
-              Cerrar sesión
+              Logout
             </Button>
           ) : (
             <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
@@ -325,7 +362,7 @@ export default function Home() {
                           <p className="text-sm text-gray-200">{event.category}</p>
                           <div className="flex items-center mt-2 text-sm text-gray-200">
                             <CalendarIcon className="h-4 w-4 mr-2" />
-                            {event.date}
+                            {formatDate(event.date)}
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-200">
                             <Clock className="h-4 w-4 mr-2" />
@@ -355,7 +392,7 @@ export default function Home() {
                         <p className="text-sm  text-muted-foreground">{event.category}</p>
                         <div className="flex items-center mt-1 text-sm">
                           <CalendarIcon className="h-4 w-4 mr-2" />
-                          {event.date}
+                          {formatDate(event.date)}
                         </div>
                       </div>
                       <Button
@@ -505,7 +542,7 @@ export default function Home() {
                       <h3 className="font-semibold">{event.title}</h3>
                       <div className="flex items-center mt-1 text-sm">
                         <CalendarIcon className="h-4 w-4 mr-2" />
-                        {event.date}
+                        {formatDate(event.date)}
                       </div>
                     </div>
                     <Button
@@ -548,7 +585,7 @@ export default function Home() {
               <p className="text-sm text-muted-foreground mb-2">{selectedEvent.category}</p>
               <div className="flex items-center mb-2 text-sm">
                 <CalendarIcon className="h-4 w-4 mr-2" />
-                {selectedEvent.date}
+                {formatDate(selectedEvent.date)}
               </div>
               <div className="flex items-center mb-2 text-sm">
                 <Clock className="h-4 w-4 mr-2" />
@@ -578,6 +615,7 @@ export default function Home() {
           <div className="grid gap-4 py-4">
             <Input id="email" placeholder="Correo electrónico" />
             <Input id="password" type="password" placeholder="Contraseña" />
+            {loginError && <p className="text-red-500">{loginError}</p>}
             <Button onClick={handleLogin}>Iniciar sesión</Button>
           </div>
         </DialogContent>
