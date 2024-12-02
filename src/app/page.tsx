@@ -281,11 +281,11 @@ export default function Home() {
             <span className="text-lg font-semibold text-white">Eventos UMSS</span>
           </div>
           {isAuthenticated ? (
-            <Button size="sm" variant="ghost" onClick={() => {
+            <Button size="sm" onClick={() => {
               localStorage.removeItem('token')
               setIsAuthenticated(false)
               setToken(null)
-            }}>
+            }}className="hover:bg-red-500">
               Logout
             </Button>
           ) : (
@@ -311,7 +311,8 @@ export default function Home() {
             size="icon" 
             variant={showSavedOnly ? "default" : "outline"} 
             onClick={toggleShowSavedOnly}
-            className={showSavedOnly ? "hover:bg-red-500" : ""}
+            //className={showSavedOnly ? "hover:bg-red-500" : ""}
+            className={showSavedOnly ? "bg-red-500" : ""}
             disabled={!isAuthenticated}
           >
             <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
