@@ -54,12 +54,12 @@ export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [newEvent, setNewEvent] = useState({
     title: '',
+    category: '',
     date: '',
     time: '',
     location: '',
     description: '',
-    image: null as File | null,
-    category: ''
+    image: null as File | null
   })
   const [events, setEvents] = useState<Event[]>([])
   const [latestEvents, setLatestEvents] = useState<Event[]>([])
@@ -78,10 +78,14 @@ export default function Home() {
         const response = await fetch('/api/eventos');
         const data = await response.json();
         const allEvents = data.map((event: Event) => ({ ...event, isSaved: false }));
-        setEvents(
-          allEvents.sort((a: Event, b: Event) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        );
-        setLatestEvents(allEvents.slice(-5).reverse());
+        
+        // Ordenar por ID en orden descendente (los más recientes primero)
+        const sortedEvents = allEvents.sort((a: Event, b: Event) => b.id - a.id);
+        
+        setEvents(sortedEvents);
+        
+        // Obtener los 5 eventos más recientes
+        setLatestEvents(sortedEvents.slice(0, 5));
         setIsLoading(false);
 
         // Si el usuario está autenticado, cargar sus favoritos después de cargar los eventos
@@ -189,68 +193,64 @@ export default function Home() {
     setNewEvent(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setNewEvent(prev => ({ ...prev, image: file }))
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewEvent({...newEvent, image: e.target.files[0]});
     }
   }
 
-  const handleSubmitNewEvent = async (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!isAuthenticated) {
-      setIsLoginOpen(true);
+
+    // Validar campos
+    if (!newEvent.title || !newEvent.category || !newEvent.date || 
+        !newEvent.time || !newEvent.location || !newEvent.description || !newEvent.image) {
+      alert('Por favor, complete todos los campos');
       return;
     }
 
-    try {
-      const eventData = {
-        title: newEvent.title,
-        category: newEvent.category,
-        date: newEvent.date,
-        time: newEvent.time,
-        location: newEvent.location,
-        description: newEvent.description,
-        image: newEvent.image ? '/images/default-event.jpg' : '/images/default-event.jpg', // Por ahora usamos una imagen por defecto
-      };
+    const formData = new FormData();
+    formData.append('title', newEvent.title);
+    formData.append('category', newEvent.category);
+    formData.append('date', newEvent.date);
+    formData.append('time', newEvent.time);
+    formData.append('location', newEvent.location);
+    formData.append('description', newEvent.description);
+    formData.append('image', newEvent.image);
 
+    try {
+      const token = localStorage.getItem('token');
       const response = await fetch('/api/eventos', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(eventData)
+        body: formData
       });
 
-      if (response.ok) {
-        const savedEvent = await response.json();
-        setEvents(prev => [...prev, { ...savedEvent, isSaved: false }]);
-        setLatestEvents(prev => [...prev, { ...savedEvent, isSaved: false }].slice(-5));
-        
-        // Limpiar el formulario
-        setNewEvent({
-          title: '',
-          date: '',
-          time: '',
-          location: '',
-          description: '',
-          image: null,
-          category: ''
-        });
-        
-        // Cambiar a la pestaña de categorías
-        setActiveTab("categories");
-        
-        alert("¡Evento creado exitosamente!");
-      } else {
-        const error = await response.json();
-        alert(`Error al crear el evento: ${error.error}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al crear evento');
       }
+
+      const createdEvent = await response.json();
+      setEvents([...events, createdEvent]);
+      
+      // Resetear formulario
+      setNewEvent({
+        title: '',
+        category: '',
+        date: '',
+        time: '',
+        location: '',
+        description: '',
+        image: null
+      });
+
+      alert('Evento creado exitosamente');
     } catch (error) {
-      console.error('Error al crear el evento:', error);
-      alert("Error al crear el evento. Por favor, intente nuevamente.");
+      console.error('Error:', error);
+      alert(error instanceof Error ? error.message : 'Error desconocido');
     }
   };
 
@@ -604,14 +604,29 @@ export default function Home() {
                 <Card className="bg-gray-200">
                   <CardContent>
                     <h2 className="text-2xl font-bold text-center mb-6 mt-8">FORMULARIO PARA AGREGAR EVENTO</h2>
-                    <form onSubmit={handleSubmitNewEvent} className="space-y-4">
+                    <form onSubmit={handleCreate} className="space-y-4">
                       <div>
                         <Label htmlFor="image">Imagen del evento</Label>
-                        <Input id="image" type="file" accept="image/*" onChange={handleImageUpload} className="bg-white"  />
+                        <Input id="image" type="file" accept="image/*" onChange={handleImageChange} className="bg-white"  />
                       </div>
                       <div>
                         <Label htmlFor="title">Nombre del evento</Label>
                         <Input id="title" name="title" value={newEvent.title} onChange={handleNewEventChange} className="bg-white" required />
+                      </div>
+                      <div>
+                        <Label htmlFor="category">Categoría</Label>
+                        <Select name="category" value={newEvent.category} onValueChange={(value) => setNewEvent(prev => ({ ...prev, category: value }))}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecciona una categoría" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem key={category.name} value={category.name}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
                         <Label htmlFor="date">Fecha</Label>
@@ -628,21 +643,6 @@ export default function Home() {
                       <div>
                         <Label htmlFor="description">Descripción</Label>
                         <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} className="bg-white" required />
-                      </div>
-                      <div>
-                        <Label htmlFor="category">Categoría</Label>
-                        <Select name="category" value={newEvent.category} onValueChange={(value) => setNewEvent(prev => ({ ...prev, category: value }))}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Selecciona una categoría" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category.name} value={category.name}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
                       </div>
                       <div className="flex justify-center">
                         <Button type="submit">Enviar</Button>
