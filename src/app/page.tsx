@@ -59,6 +59,7 @@ export default function Home() {
     location: '',
     description: '',
     image: null as File | null,
+    category: ''
   })
   const [events, setEvents] = useState<Event[]>([])
   const [latestEvents, setLatestEvents] = useState<Event[]>([])
@@ -69,6 +70,7 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [token, setToken] = useState<string | null>(null)
   const [loginError, setLoginError] = useState<string | null>(null)
+  const [favorites, setFavorites] = useState<number[]>([]);
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -81,14 +83,54 @@ export default function Home() {
         );
         setLatestEvents(allEvents.slice(-5).reverse());
         setIsLoading(false);
+
+        // Si el usuario está autenticado, cargar sus favoritos después de cargar los eventos
+        if (isAuthenticated && token) {
+          loadFavorites();
+        }
       } catch (error) {
         console.error('Error cargando eventos:', error);
         setIsLoading(false);
       }
     };
 
+    const loadFavorites = async () => {
+      try {
+        const response = await fetch('/api/favoritos', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          const favoriteIds = data.map((fav: any) => fav.id);
+          setFavorites(favoriteIds);
+          setEvents(prevEvents => 
+            prevEvents.map(event => ({
+              ...event,
+              isSaved: favoriteIds.includes(event.id)
+            }))
+          );
+          // Actualizar también los eventos más recientes
+          setLatestEvents(prevLatest => 
+            prevLatest.map(event => ({
+              ...event,
+              isSaved: favoriteIds.includes(event.id)
+            }))
+          );
+        } else if (response.status === 401) {
+          localStorage.removeItem('token');
+          setIsAuthenticated(false);
+          setToken(null);
+        }
+      } catch (error) {
+        console.error('Error al cargar favoritos:', error);
+      }
+    };
+
     loadEvents();
-  }, [])
+  }, [isAuthenticated, token]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -154,34 +196,122 @@ export default function Home() {
     }
   }
 
-  const handleSubmitNewEvent = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Nuevo evento a enviar:", newEvent)
-    alert("Evento enviado al administrador para revisión.")
-    setNewEvent({
-      title: '',
-      date: '',
-      time: '',
-      location: '',
-      description: '',
-      image: null,
-    })
-    setActiveTab("categories")
-  }
-
-  const toggleSaveEvent = async (id: number) => {
+  const handleSubmitNewEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!isAuthenticated) {
-      alert('Por favor, inicia sesión para marcar eventos como favoritos.')
-      return
+      setIsLoginOpen(true);
+      return;
     }
-    setEvents(prevEvents => {
-      const updatedEvents = prevEvents.map(event => 
-        event.id === id ? { ...event, isSaved: !event.isSaved } : event
-      )
-      setCurrentMonthEvents(getEventsForSelectedDate(date, updatedEvents))
-      return updatedEvents
-    })
-  }
+
+    try {
+      const eventData = {
+        title: newEvent.title,
+        category: newEvent.category,
+        date: newEvent.date,
+        time: newEvent.time,
+        location: newEvent.location,
+        description: newEvent.description,
+        image: newEvent.image ? '/images/default-event.jpg' : '/images/default-event.jpg', // Por ahora usamos una imagen por defecto
+      };
+
+      const response = await fetch('/api/eventos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(eventData)
+      });
+
+      if (response.ok) {
+        const savedEvent = await response.json();
+        setEvents(prev => [...prev, { ...savedEvent, isSaved: false }]);
+        setLatestEvents(prev => [...prev, { ...savedEvent, isSaved: false }].slice(-5));
+        
+        // Limpiar el formulario
+        setNewEvent({
+          title: '',
+          date: '',
+          time: '',
+          location: '',
+          description: '',
+          image: null,
+          category: ''
+        });
+        
+        // Cambiar a la pestaña de categorías
+        setActiveTab("categories");
+        
+        alert("¡Evento creado exitosamente!");
+      } else {
+        const error = await response.json();
+        alert(`Error al crear el evento: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error al crear el evento:', error);
+      alert("Error al crear el evento. Por favor, intente nuevamente.");
+    }
+  };
+
+  const toggleFavorite = async (eventId: number) => {
+    if (!isAuthenticated) {
+      setIsLoginOpen(true);
+      return;
+    }
+
+    try {
+      const method = favorites.includes(eventId) ? 'DELETE' : 'POST';
+      const response = await fetch('/api/favoritos', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ evento_id: eventId })
+      });
+
+      const data = await response.json();
+
+      if (response.ok || response.status === 409) { 
+        if (method === 'DELETE') {
+          setFavorites(prev => prev.filter(id => id !== eventId));
+        } else {
+          setFavorites(prev => [...prev, eventId]);
+        }
+        
+        setEvents(prevEvents =>
+          prevEvents.map(event =>
+            event.id === eventId
+              ? { ...event, isSaved: !event.isSaved }
+              : event
+          )
+        );
+
+        // Actualizar también los eventos más recientes
+        setLatestEvents(prevLatest => 
+          prevLatest.map(event =>
+            event.id === eventId
+              ? { ...event, isSaved: !event.isSaved }
+              : event
+          )
+        );
+
+        // Actualizar los eventos del mes actual
+        setCurrentMonthEvents(getEventsForSelectedDate(date, events));
+      } else {
+        console.error('Error al actualizar favorito:', data.error);
+        if (response.status === 401) {
+          localStorage.removeItem('token');
+          setIsAuthenticated(false);
+          setToken(null);
+          setIsLoginOpen(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error al actualizar favorito:', error);
+    }
+  };
 
   const getVisibleEvents = () => {
     return latestEvents.slice(currentEventIndex, currentEventIndex + 3)
@@ -401,7 +531,7 @@ export default function Home() {
                         className="ml-4"
                         onClick={(e) => {
                           e.stopPropagation()
-                          toggleSaveEvent(event.id)
+                          toggleFavorite(event.id)
                         }}
                         disabled={!isAuthenticated}
                       >
@@ -499,6 +629,21 @@ export default function Home() {
                         <Label htmlFor="description">Descripción</Label>
                         <Textarea id="description" name="description" value={newEvent.description} onChange={handleNewEventChange} className="bg-white" required />
                       </div>
+                      <div>
+                        <Label htmlFor="category">Categoría</Label>
+                        <Select name="category" value={newEvent.category} onValueChange={(value) => setNewEvent(prev => ({ ...prev, category: value }))}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecciona una categoría" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem key={category.name} value={category.name}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div className="flex justify-center">
                         <Button type="submit">Enviar</Button>
                       </div>
@@ -551,7 +696,7 @@ export default function Home() {
                       className="ml-4"
                       onClick={(e) => {
                         e.stopPropagation()
-                        toggleSaveEvent(event.id)
+                        toggleFavorite(event.id)
                       }}
                       disabled={!isAuthenticated}
                     >
