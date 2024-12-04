@@ -404,14 +404,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-10 bg-gradient-to-r from-red-500 to-blue-500 border-b border-border rounded-b-lg">
+      <header className={`sticky top-0 z-10 bg-gradient-to-r from-red-500 to-blue-500 border-b border-border rounded-b-lg ${activeTab === 'add' ? 'hidden' : ''}`}>
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
             <span className="text-lg font-semibold text-white">Eventos UMSS</span>
           </div>
           {isAuthenticated ? (
-            <Button size="sm" variant="ghost" onClick={() => {
+            <Button size="sm" className="hover:bg-red-500" onClick={() => {
               localStorage.removeItem('token')
               setIsAuthenticated(false)
               setToken(null)
@@ -616,7 +616,7 @@ export default function Home() {
                       <div>
                         <Label htmlFor="category">Categoría</Label>
                         <Select name="category" value={newEvent.category} onValueChange={(value) => setNewEvent(prev => ({ ...prev, category: value }))}>
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="w-full bg-white">
                             <SelectValue placeholder="Selecciona una categoría" />
                           </SelectTrigger>
                           <SelectContent>
