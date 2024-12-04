@@ -404,7 +404,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className={`sticky top-0 z-10 bg-gradient-to-r from-red-500 to-blue-500 border-b border-border rounded-b-lg ${activeTab === 'add' ? 'hidden' : ''}`}>
+      <header className={`sticky top-0 z-10 bg-gradient-to-r from-red-500 to-blue-500 border-b border-border rounded-b-lg transition-all duration-400 ease-in-out ${activeTab === 'add' ? 'h-0 opacity-0 overflow-hidden' : 'h-auto opacity-100'}`}>
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
@@ -450,7 +450,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="p-4 space-y-6 bg-gray-100">
+      <main className={`p-4 space-y-6 bg-gray-100 transition-all duration-300 ease-in-out ${activeTab === 'add' ? '-mt-4' : ''}`}>
         {!selectedCategory && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-red-500 to-blue-500">
@@ -630,15 +630,15 @@ export default function Home() {
                       </div>
                       <div>
                         <Label htmlFor="date">Fecha</Label>
-                        <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} className="bg-white" required />
+                        <Input id="date" name="date" type="date" value={newEvent.date} onChange={handleNewEventChange} className="bg-white px-3 py-2" required />
                       </div>
                       <div>
                         <Label htmlFor="time">Hora</Label>
-                        <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} className="bg-white" required />
+                        <Input id="time" name="time" type="time" value={newEvent.time} onChange={handleNewEventChange} className="bg-white px-3 py-2" required />
                       </div>
                       <div>
                         <Label htmlFor="location">Lugar</Label>
-                        <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} className="bg-white" required />
+                        <Input id="location" name="location" value={newEvent.location} onChange={handleNewEventChange} className="bg-white px-3 py-2" required />
                       </div>
                       <div>
                         <Label htmlFor="description">Descripción</Label>
@@ -740,13 +740,16 @@ export default function Home() {
                 <MapPin className="h-4 w-4 mr-2" />
                 {selectedEvent.location}
               </div>
-              <DialogDescription>
-                {selectedEvent.description.split('\n').map((line, index) => (
-                  <p key={index} className="mb-2">
-                    {line.replace(/:\)/g, '😊').replace(/:\(/g, '😢').replace(/<3/g, '❤️')}
-                  </p>
-                ))}
+              <DialogDescription className="mb-4">
+                Detalles del evento:
               </DialogDescription>
+              <div className="space-y-2">
+                {selectedEvent.description.split('\n').map((line, index) => (
+                  <span key={index} className="block mb-2">
+                    {line.replace(/:\)/g, '😊').replace(/:\(/g, '😢').replace(/<3/g, '❤️')}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </DialogContent>
