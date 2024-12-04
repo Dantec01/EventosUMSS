@@ -761,8 +761,8 @@ export default function Home() {
             <DialogTitle>Iniciar sesión</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <Input id="email" placeholder="Correo electrónico" />
-            <Input id="password" type="password" placeholder="Contraseña" />
+            <Input id="email" placeholder="Correo electrónico" className="px-3" />
+            <Input id="password" type="password" placeholder="Contraseña" className="px-3" />
             {loginError && <p className="text-red-500">{loginError}</p>}
             <Button onClick={handleLogin}>Iniciar sesión</Button>
           </div>
