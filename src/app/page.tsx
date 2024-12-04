@@ -429,7 +429,7 @@ export default function Home() {
           <Input 
             type="search" 
             placeholder="Buscar eventos..." 
-            className="flex-grow bg-white" 
+            className="flex-grow bg-white px-2" 
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
@@ -441,7 +441,7 @@ export default function Home() {
             size="icon" 
             variant={showSavedOnly ? "default" : "outline"} 
             onClick={toggleShowSavedOnly}
-            className={showSavedOnly ? "hover:bg-red-500" : ""}
+            className={showSavedOnly ? "bg-red-500" : ""}
             disabled={!isAuthenticated}
           >
             <Heart className={`h-4 w-4 ${showSavedOnly ? 'fill-current' : ''}`} />
