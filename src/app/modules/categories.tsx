@@ -83,7 +83,7 @@ export function CategorySelector({
     <Button 
       variant="outline" 
       onClick={onBack} 
-      className="bg-teal-500 hover:bg-teal-600 text-white w-full md:w-[100px] flex items-center justify-center gap-2"
+      className="bg-teal-500 hover:bg-teal-600 text-white w-full md:w-[100px] flex items-center justify-center gap-2 mt-4 shadow-lg"
     >
       <ArrowLeft className="h-4 w-4" />
       <span>Volver</span>

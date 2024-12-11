@@ -360,6 +360,7 @@ export function EventsByCategory({
 
   return (
     <div className="mt-4">
+      <h2 className="text-2xl font-bold mb-4">Eventos de {category}</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {events.map((event) => (
           <Card 

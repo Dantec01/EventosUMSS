@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export function CategoryView() {
   // Estado local del componente
   const [events, setEvents] = useState<Event[]>([])
+  const [allEvents, setAllEvents] = useState<Event[]>([]) // Guardamos todos los eventos sin filtrar
   const [latestEvents, setLatestEvents] = useState<Event[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null)
@@ -67,7 +68,33 @@ export function CategoryView() {
   // Cargar eventos desde la API con filtros
   const loadEvents = async () => {
     try {
-      // Construir la URL con los filtros
+      setIsLoading(true)
+      
+      if (!selectedCategory && !selectedLocation && !selectedInterest) {
+        // Si no hay filtros activos y ya tenemos los eventos, los usamos
+        if (allEvents.length > 0) {
+          setEvents(allEvents)
+          setLatestEvents(allEvents.slice(0, 5))
+          setIsLoading(false)
+          return
+        }
+        
+        // Si no tenemos eventos, hacemos la llamada inicial
+        const response = await fetch('/api/eventos')
+        const data = await response.json()
+        const eventsWithFavorites = data.map((event: Event) => ({
+          ...event,
+          isSaved: favorites.includes(event.id)
+        }))
+        
+        setAllEvents(eventsWithFavorites)
+        setEvents(eventsWithFavorites)
+        setLatestEvents(eventsWithFavorites.slice(0, 5))
+        setIsLoading(false)
+        return
+      }
+      
+      // Si hay filtros activos, hacemos la llamada con filtros
       let url = '/api/eventos/filtrar?'
       const params = new URLSearchParams()
       
@@ -83,21 +110,15 @@ export function CategoryView() {
       
       url += params.toString()
       
-      setIsLoading(true)
       const response = await fetch(url)
       const data = await response.json()
       
-      // Aplicar el estado de favoritos a los eventos cargados
       const eventsWithFavorites = data.map((event: Event) => ({
         ...event,
         isSaved: favorites.includes(event.id)
       }))
       
       setEvents(eventsWithFavorites)
-      if (!selectedCategory && !selectedLocation && !selectedInterest) {
-        setLatestEvents(eventsWithFavorites.slice(0, 5))
-      }
-      
       setIsLoading(false)
     } catch (error) {
       console.error('Error cargando eventos:', error)
@@ -194,39 +215,47 @@ export function CategoryView() {
     setSelectedCategory(null)
     setSelectedLocation(null)
     setSelectedInterest(null)
-    loadEvents()
+    // Usamos los eventos guardados en lugar de hacer una nueva llamada
+    setEvents(allEvents)
+    setLatestEvents(allEvents.slice(0, 5))
   }
 
   // Componente de Selectores
   const Filters = () => (
-    <div className="flex flex-col md:flex-row gap-4 w-full">
-      <Select value={selectedLocation || "all"} onValueChange={handleLocationChange}>
-        <SelectTrigger className="w-full md:w-[200px]">
-          <SelectValue placeholder="Seleccionar ubicación" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todas las ubicaciones</SelectItem>
-          {locations.map(location => (
-            <SelectItem key={location} value={location}>
-              {location}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="bg-gray-100 shadow-md rounded-lg p-2 mb-2">
+      <div className="flex flex-col md:flex-row gap-4 w-full justify-start">
+        <div className="w-full md:w-[180px]">
+          <Select value={selectedLocation || "all"} onValueChange={handleLocationChange}>
+            <SelectTrigger className="w-full bg-white shadow-sm">
+              <SelectValue placeholder="Seleccionar ubicación" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las ubicaciones</SelectItem>
+              {locations.map(location => (
+                <SelectItem key={location} value={location}>
+                  {location}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <Select value={selectedInterest || "all"} onValueChange={handleInterestChange}>
-        <SelectTrigger className="w-full md:w-[200px]">
-          <SelectValue placeholder="Seleccionar interés" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos los temas</SelectItem>
-          {interests.map(interest => (
-            <SelectItem key={interest} value={interest}>
-              {interest}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <div className="w-full md:w-[180px]">
+          <Select value={selectedInterest || "all"} onValueChange={handleInterestChange}>
+            <SelectTrigger className="w-full bg-white shadow-sm">
+              <SelectValue placeholder="Seleccionar interés" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los temas</SelectItem>
+              {interests.map(interest => (
+                <SelectItem key={interest} value={interest}>
+                  {interest}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
     </div>
   )
 
