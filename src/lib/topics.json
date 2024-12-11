@@ -1,0 +1,21 @@
+{
+  "topics": [
+    { "name": "Arquitectura" },
+    { "name": "Arte y Cultura" },
+    { "name": "Ciencias" },
+    { "name": "Deportes" },
+    { "name": "Educación" },
+    { "name": "Emprendimiento" },
+    { "name": "Entretenimiento" },
+    { "name": "Gastronomía" },
+    { "name": "Ingeniería" },
+    { "name": "Innovación" },
+    { "name": "Investigación" },
+    { "name": "Literatura" },
+    { "name": "Medicina" },
+    { "name": "Medio Ambiente" },
+    { "name": "Música" },
+    { "name": "Otros" },
+    { "name": "Tecnología" }
+  ]
+}

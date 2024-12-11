@@ -3,8 +3,8 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
-import { Event, Category } from "./types"
+import { ArrowLeft, CalendarIcon, Clock } from "lucide-react"
+import { Event, Category, formatDate } from "./types"
 
 interface CategoriesProps {
   categories: Category[]
@@ -55,6 +55,16 @@ export function Categories({
                 <div className="absolute inset-0 bg-black bg-opacity-50 p-4 flex flex-col justify-end">
                   <h3 className="font-semibold text-white">{event.title}</h3>
                   <p className="text-sm text-gray-200">{event.category}</p>
+                  <div className="flex flex-col gap-1 mt-2 text-sm text-gray-200">
+                    <div className="flex items-center">
+                      <CalendarIcon className="h-4 w-4 mr-1" />
+                      <span>{formatDate(event.date)}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      <span>{event.time.slice(0, 5)}</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -66,14 +76,8 @@ export function Categories({
 }
 
 export function CategorySelector({
-  categories,
-  selectedCategory,
-  onCategoryClick,
   onBack
 }: {
-  categories: Category[]
-  selectedCategory: string
-  onCategoryClick: (category: string) => void
   onBack: () => void
 }) {
   return (
@@ -88,19 +92,6 @@ export function CategorySelector({
       </Button>
       
       <div className="flex flex-col md:flex-row gap-4 w-full">
-        <Select value={selectedCategory} onValueChange={onCategoryClick}>
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Selecciona una categoría" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((category) => (
-              <SelectItem key={category.name} value={category.name}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
         <Select>
           <SelectTrigger className="w-full md:w-[200px]">
             <SelectValue placeholder="Seleccionar ubicación" />

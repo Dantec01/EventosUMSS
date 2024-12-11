@@ -197,12 +197,12 @@ export default function Home() {
         
         {selectedCategory && (
           <>
-            <CategorySelector 
+            {/* <CategorySelector 
               categories={categories}
               selectedCategory={selectedCategory}
               onCategoryClick={handleCategoryClick}
               onBack={handleBackToCategories}
-            />
+            /> */}
             <EventsByCategory 
               events={filteredEvents}
               isAuthenticated={isAuthenticated}
