@@ -103,7 +103,17 @@ export function CategorySelector({
             <SelectValue placeholder="Seleccionar ubicación" />
           </SelectTrigger>
           <SelectContent>
-            {/* Las ubicaciones se cargarán desde la base de datos */}
+            <SelectItem value="UMSS Campus Central">UMSS Campus Central</SelectItem>
+            <SelectItem value="UMSS Facultad de Agronomía">UMSS Facultad de Agronomía</SelectItem>
+            <SelectItem value="UMSS Facultad de Arquitectura">UMSS Facultad de Arquitectura</SelectItem>
+            <SelectItem value="UMSS Facultad de Derecho">UMSS Facultad de Derecho</SelectItem>
+            <SelectItem value="UMSS Facultad de Economía">UMSS Facultad de Economía</SelectItem>
+            <SelectItem value="UMSS Facultad de Humanidades">UMSS Facultad de Humanidades</SelectItem>
+            <SelectItem value="UMSS Facultad de Medicina">UMSS Facultad de Medicina</SelectItem>
+            <SelectItem value="UMSS Facultad de Odontología">UMSS Facultad de Odontología</SelectItem>
+            <SelectItem value="UMSS Facultad de Tecnología">UMSS Facultad de Tecnología</SelectItem>
+            <SelectItem value="UMSS Facultad de Veterinaria">UMSS Facultad de Veterinaria</SelectItem>
+            <SelectItem value="UMSS Valle de Sacta">UMSS Valle de Sacta</SelectItem>
           </SelectContent>
         </Select>
 
@@ -112,7 +122,23 @@ export function CategorySelector({
             <SelectValue placeholder="Seleccionar interés" />
           </SelectTrigger>
           <SelectContent>
-            {/* Los intereses se cargarán desde la base de datos */}
+            <SelectItem value="Arquitectura">Arquitectura</SelectItem>
+            <SelectItem value="Arte y Cultura">Arte y Cultura</SelectItem>
+            <SelectItem value="Ciencias">Ciencias</SelectItem>
+            <SelectItem value="Deportes">Deportes</SelectItem>
+            <SelectItem value="Educación">Educación</SelectItem>
+            <SelectItem value="Emprendimiento">Emprendimiento</SelectItem>
+            <SelectItem value="Entretenimiento">Entretenimiento</SelectItem>
+            <SelectItem value="Gastronomía">Gastronomía</SelectItem>
+            <SelectItem value="Ingeniería">Ingeniería</SelectItem>
+            <SelectItem value="Innovación">Innovación</SelectItem>
+            <SelectItem value="Investigación">Investigación</SelectItem>
+            <SelectItem value="Literatura">Literatura</SelectItem>
+            <SelectItem value="Medicina">Medicina</SelectItem>
+            <SelectItem value="Medio Ambiente">Medio Ambiente</SelectItem>
+            <SelectItem value="Música">Música</SelectItem>
+            <SelectItem value="Otros">Otros</SelectItem>
+            <SelectItem value="Tecnología">Tecnología</SelectItem>
           </SelectContent>
         </Select>
       </div>
