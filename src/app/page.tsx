@@ -36,7 +36,9 @@ export default function Home() {
     getVisibleEvents,
     toggleShowSavedOnly,
     handleShowAllEvents,
-    setEvents
+    setEvents,
+    nearbyEvents,
+    getNearbyEvents
   } = useEvents()
 
   const {
@@ -167,6 +169,8 @@ export default function Home() {
                 onEventClick={openEventDetails}
                 onToggleFavorite={(eventId) => toggleFavorite(eventId, token)}
                 onShowAllEvents={handleShowAllEvents}
+                getNearbyEvents={getNearbyEvents}
+                nearbyEvents={nearbyEvents}
               />
             </TabsContent>
             <TabsContent value="calendar">

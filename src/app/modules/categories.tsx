@@ -76,8 +76,14 @@ export function Categories({
 }
 
 export function CategorySelector({
+  categories,
+  selectedCategory,
+  onCategoryClick,
   onBack
 }: {
+  categories: Category[]
+  selectedCategory: string | null
+  onCategoryClick: (category: string) => void
   onBack: () => void
 }) {
   return (

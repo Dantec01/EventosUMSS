@@ -8,6 +8,7 @@ export interface Event {
   description: string
   image: string
   isSaved?: boolean
+  distance?: number
 }
 
 export interface Category {
