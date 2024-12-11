@@ -32,8 +32,12 @@ export function useEvents() {
       const data = await response.json()
       const allEvents = data.map((event: Event) => ({ ...event, isSaved: false }))
       
-      // Ordenar por ID en orden descendente (los más recientes primero)
-      const sortedEvents = allEvents.sort((a: Event, b: Event) => b.id - a.id)
+      // Ordenar por fecha del evento en orden descendente
+      const sortedEvents = allEvents.sort((a: Event, b: Event) => {
+        const dateA = new Date(a.date).getTime()
+        const dateB = new Date(b.date).getTime()
+        return dateB - dateA
+      })
       
       setEvents(sortedEvents)
       
@@ -203,7 +207,7 @@ export function Events({
   nearbyEvents
 }: EventsProps) {
   const [showNearby, setShowNearby] = useState(false);
-  
+
   return (
     <div className="space-y-4">
       <div className="flex justify-center items-center mb-4">
@@ -235,51 +239,57 @@ export function Events({
             nearbyEvents.map((event) => (
               <Card 
                 key={event.id} 
-                className="cursor-pointer hover:shadow-lg transition-shadow shadow-md"
+                className={`cursor-pointer hover:shadow-lg transition-shadow shadow-md ${
+                  event.date < new Date().toISOString().split('T')[0] ? 'bg-red-200/70' : ''
+                }`}
                 onClick={() => onEventClick(event)}
               >
                 <CardContent className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div className="w-full">
-                      {event.distance && (
-                        <p className="text-sm text-blue-600 mb-3 font-medium">
-                          A {Math.round(event.distance * 10) / 10} km de distancia
-                        </p>
-                      )}
-                      <h3 className="font-semibold">{event.title}</h3>
-                      <p className="text-sm text-gray-500">{event.description}</p>
-                      <div className="flex items-center mt-2 text-sm text-gray-500">
-                        <CalendarIcon className="w-4 h-4 mr-1" />
-                        <span>{formatDate(event.date)} {event.time}</span>
-                      </div>
-                      <div className="mt-2 text-sm text-gray-500">
-                        <p>{event.category}</p>
-                        <p>{event.location}</p>
-                      </div>
-                      {event.image && (
-                        <div className="mt-2">
-                          <img 
-                            src={event.image} 
-                            alt={event.title}
-                            className="w-full h-32 object-cover rounded-md"
-                          />
-                        </div>
-                      )}
-                    </div>
-                    {isAuthenticated && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onToggleFavorite(event.id);
-                        }}
-                      >
-                        <Heart
-                          className={`w-4 h-4 ${event.isSaved ? "fill-red-500 text-red-500" : ""}`}
+                  <div className="flex gap-4">
+                    {event.image && (
+                      <div className="flex-shrink-0 w-24 h-24">
+                        <img 
+                          src={event.image} 
+                          alt={event.title}
+                          className="w-full h-full object-cover rounded-md"
                         />
-                      </Button>
+                      </div>
                     )}
+                    <div className="flex-grow">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          {event.distance && (
+                            <p className="text-sm text-blue-600 mb-3 font-medium">
+                              A {Math.round(event.distance * 10) / 10} km de distancia
+                            </p>
+                          )}
+                          <h3 className="font-semibold">{event.title}</h3>
+                          <p className="text-sm text-gray-500">{event.description}</p>
+                          <div className="flex items-center mt-2 text-sm text-gray-500">
+                            <CalendarIcon className="w-4 h-4 mr-1" />
+                            <span>{formatDate(event.date)} {event.time}</span>
+                          </div>
+                          <div className="mt-2 text-sm text-gray-500">
+                            <p>{event.category}</p>
+                            <p>{event.location}</p>
+                          </div>
+                        </div>
+                        {isAuthenticated && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onToggleFavorite(event.id);
+                            }}
+                          >
+                            <Heart
+                              className={`w-4 h-4 ${event.isSaved ? "fill-red-500 text-red-500" : ""}`}
+                            />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -289,7 +299,13 @@ export function Events({
           )
         ) : (
           events.map((event) => (
-            <Card key={event.id} className="hover:shadow-lg transition-shadow shadow-md">
+            <Card 
+              key={event.id} 
+              className={`cursor-pointer hover:shadow-lg transition-shadow shadow-md ${
+                event.date < new Date().toISOString().split('T')[0] ? 'bg-red-200/70' : ''
+              }`}
+              onClick={() => onEventClick(event)}
+            >
               <CardContent className="p-3 flex items-center justify-between">
                 <div className="flex-grow cursor-pointer" onClick={() => onEventClick(event)}>
                   <h3 className="font-semibold">{event.title}</h3>
@@ -324,10 +340,10 @@ export function Events({
 export function EventsByCategory({ 
   events, 
   isAuthenticated, 
-  category,
+  category, 
   onEventClick, 
-  onToggleFavorite,
-  onBack
+  onToggleFavorite, 
+  onBack 
 }: {
   events: Event[]
   isAuthenticated: boolean
@@ -336,35 +352,69 @@ export function EventsByCategory({
   onToggleFavorite: (eventId: number) => void
   onBack: () => void
 }) {
+  const isEventPassed = (date: string, time: string) => {
+    const eventDate = new Date(`${date} ${time}`);
+    const now = new Date();
+    return eventDate < now;
+  };
+
   return (
-    <div className="space-y-2">
-      <h2 className="text-2xl font-bold mb-2">Eventos de {category}</h2>
-      {events.map((event) => (
-        <Card key={event.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-3 flex items-center justify-between">
-            <div className="flex-grow cursor-pointer" onClick={() => onEventClick(event)}>
-              <h3 className="font-semibold">{event.title}</h3>
-              <div className="flex items-center mt-1 text-sm">
-                <CalendarIcon className="h-4 w-4 mr-2" />
-                {formatDate(event.date)}
+    <div className="mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        {events.map((event) => (
+          <Card 
+            key={event.id} 
+            className={`cursor-pointer hover:shadow-lg transition-shadow shadow-md ${
+              isEventPassed(event.date, event.time) ? 'bg-red-200/70' : ''
+            }`}
+            onClick={() => onEventClick(event)}
+          >
+            <CardContent className="p-4">
+              <div className="flex gap-4">
+                {event.image && (
+                  <div className="flex-shrink-0 w-24 h-24">
+                    <img 
+                      src={event.image} 
+                      alt={event.title}
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                  </div>
+                )}
+                <div className="flex-grow">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold">{event.title}</h3>
+                      <p className="text-sm text-gray-500">{event.description}</p>
+                      <div className="flex items-center mt-2 text-sm text-gray-500">
+                        <CalendarIcon className="w-4 h-4 mr-1" />
+                        <span>{formatDate(event.date)} {event.time}</span>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-500">
+                        <p>{event.category}</p>
+                        <p>{event.location}</p>
+                      </div>
+                    </div>
+                    {isAuthenticated && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleFavorite(event.id);
+                        }}
+                      >
+                        <Heart
+                          className={`w-4 h-4 ${event.isSaved ? "fill-red-500 text-red-500" : ""}`}
+                        />
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="ml-4"
-              onClick={(e) => {
-                e.stopPropagation()
-                onToggleFavorite(event.id)
-              }}
-              disabled={!isAuthenticated}
-            >
-              <Heart className={`h-6 w-6 ${event.isSaved ? 'fill-current text-red-500' : 'text-gray-400'}`} />
-              <span className="sr-only">{event.isSaved ? 'Quitar de favoritos' : 'Agregar a favoritos'}</span>
-            </Button>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
       <div className="flex justify-center mt-4">
         <Button onClick={onBack} className="bg-teal-500 hover:bg-teal-600 text-white">
           Volver
