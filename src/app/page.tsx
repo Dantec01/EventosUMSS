@@ -12,7 +12,7 @@ import { SearchBar } from './modules/search'
 import { EventDetails } from './modules/eventDetails'
 import { Events, EventsByCategory, useEvents } from './modules/events'
 import { Calendar, useCalendar } from './modules/calendar'
-import { Categories, CategorySelector } from './modules/categories'
+import { CategoryView } from './modules/categoryView'
 import { EventForm } from './modules/eventForm'
 
 export default function Home() {
@@ -152,14 +152,7 @@ export default function Home() {
               <TabsTrigger value="add" className={`flex-grow text-white ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isAuthenticated}>Agregar</TabsTrigger>
             </TabsList>
             <TabsContent value="categories">
-              <Categories 
-                categories={categories}
-                latestEvents={getVisibleEvents()}
-                selectedCategory={selectedCategory}
-                onCategoryClick={handleCategoryClick}
-                onEventClick={openEventDetails}
-                onBackToCategories={handleBackToCategories}
-              />
+              <CategoryView />
             </TabsContent>
             <TabsContent value="events">
               <Events 
@@ -201,12 +194,6 @@ export default function Home() {
         
         {selectedCategory && (
           <>
-            {<CategorySelector 
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onCategoryClick={handleCategoryClick}
-              onBack={handleBackToCategories}
-            />}
             <EventsByCategory 
               events={filteredEvents}
               isAuthenticated={isAuthenticated}
