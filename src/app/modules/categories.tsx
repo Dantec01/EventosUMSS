@@ -77,22 +77,48 @@ export function CategorySelector({
   onBack: () => void
 }) {
   return (
-    <div className="flex justify-center items-center space-x-4">
-      <Button variant="outline" size="icon" onClick={onBack} className="bg-teal-500 hover:bg-teal-600 text-white">
+    <div className="flex flex-col md:flex-row items-center gap-4">
+      <Button 
+        variant="outline" 
+        onClick={onBack} 
+        className="bg-teal-500 hover:bg-teal-600 text-white w-full md:w-[100px] flex items-center justify-center gap-2"
+      >
         <ArrowLeft className="h-4 w-4" />
+        <span>Volver</span>
       </Button>
-      <Select value={selectedCategory} onValueChange={onCategoryClick}>
-        <SelectTrigger className="w-[40%]">
-          <SelectValue placeholder="Selecciona una categoría" />
-        </SelectTrigger>
-        <SelectContent>
-          {categories.map((category) => (
-            <SelectItem key={category.name} value={category.name}>
-              {category.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      
+      <div className="flex flex-col md:flex-row gap-4 w-full">
+        <Select value={selectedCategory} onValueChange={onCategoryClick}>
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Selecciona una categoría" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category.name} value={category.name}>
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select>
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Seleccionar ubicación" />
+          </SelectTrigger>
+          <SelectContent>
+            {/* Las ubicaciones se cargarán desde la base de datos */}
+          </SelectContent>
+        </Select>
+
+        <Select>
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Seleccionar interés" />
+          </SelectTrigger>
+          <SelectContent>
+            {/* Los intereses se cargarán desde la base de datos */}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   )
 }

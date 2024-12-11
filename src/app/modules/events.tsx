@@ -223,8 +223,8 @@ export function EventsByCategory({
   onBack: () => void
 }) {
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold mb-4">Eventos de {category}</h2>
+    <div className="space-y-2">
+      <h2 className="text-2xl font-bold mb-2">Eventos de {category}</h2>
       {events.map((event) => (
         <Card key={event.id} className="hover:shadow-md transition-shadow">
           <CardContent className="p-3 flex items-center justify-between">
