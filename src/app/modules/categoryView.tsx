@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { Categories, CategorySelector } from './categories'
-import { EventsByCategory } from './events'
+import { EventsByCategory, useEvents } from './events'
 import { Event, Category } from './types'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { EventDetails } from './eventDetails'
 
 export function CategoryView({ 
   events,
@@ -22,6 +23,16 @@ export function CategoryView({
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
   const [filteredEvents, setFilteredEvents] = useState<Event[]>(events)
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+
+  const { nearbyEvents, getNearbyEvents, recommendedEvents, getRecommendedEvents } = useEvents()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getNearbyEvents()
+      getRecommendedEvents()
+    }
+  }, [isAuthenticated])
 
   // Categorías predefinidas
   const categories: Category[] = [
@@ -129,7 +140,7 @@ export function CategoryView({
   }
 
   const handleEventClick = (event: Event) => {
-    // Implementar si es necesario
+    setSelectedEvent(event)
   }
 
   const handleBackToCategories = () => {
@@ -180,32 +191,43 @@ export function CategoryView({
 
   return (
     <div className="container mx-auto px-4">
-      {selectedCategory ? (
-        <>
-          <div className="flex flex-col gap-4">
-            <CategorySelector
-              onBack={handleBackToCategories}
-            />
-            <Filters />
-          </div>
-          <EventsByCategory
-            events={filteredEvents}
-            isAuthenticated={isAuthenticated}
-            category={selectedCategory}
-            onEventClick={handleEventClick}
-            onToggleFavorite={onToggleFavorite}
-            onBack={handleBackToCategories}
-          />
-        </>
-      ) : (
-        <Categories
-          categories={categories}
-          latestEvents={events.slice(0, 5)}
-          selectedCategory={selectedCategory}
-          onCategoryClick={handleCategoryClick}
-          onEventClick={handleEventClick}
-          onBackToCategories={handleBackToCategories}
+      {selectedEvent ? (
+        <EventDetails 
+          event={selectedEvent} 
+          onClose={() => setSelectedEvent(null)}
         />
+      ) : (
+        <>
+          {selectedCategory ? (
+            <>
+              <div className="flex flex-col gap-4">
+                <CategorySelector
+                  onBack={handleBackToCategories}
+                />
+                <Filters />
+              </div>
+              <EventsByCategory
+                events={filteredEvents}
+                isAuthenticated={isAuthenticated}
+                category={selectedCategory}
+                onEventClick={handleEventClick}
+                onToggleFavorite={onToggleFavorite}
+                onBack={handleBackToCategories}
+              />
+            </>
+          ) : (
+            <Categories
+              categories={categories}
+              latestEvents={events.slice(0, 5)}
+              nearbyEvents={nearbyEvents}
+              recommendedEvents={recommendedEvents}
+              selectedCategory={selectedCategory}
+              onCategoryClick={handleCategoryClick}
+              onEventClick={(event) => setSelectedEvent(event)}
+              onBackToCategories={handleBackToCategories}
+            />
+          )}
+        </>
       )}
     </div>
   )

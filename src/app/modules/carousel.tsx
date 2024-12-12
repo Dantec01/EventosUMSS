@@ -51,8 +51,7 @@ export function EventCarousel({ events, onEventClick }: CarouselProps) {
   }
 
   return (
-    <section aria-label="Últimos eventos" className="mt-6 w-full px-4">
-      <h2 className="text-lg font-semibold mb-2">Últimos eventos</h2>
+    <section aria-label="Carrusel de eventos" className="mt-6 w-full px-4">
       <div className="relative -mx-4">
         <div className="overflow-hidden">
           <div 
@@ -75,6 +74,11 @@ export function EventCarousel({ events, onEventClick }: CarouselProps) {
                       className="w-full h-[200px] object-cover"
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-4">
+                      {event.distance && (
+                        <p className="text-sm text-blue-300 mb-1">
+                          A {Math.round(event.distance * 10) / 10} km de distancia
+                        </p>
+                      )}
                       <h3 className="font-semibold text-white text-lg">{event.title}</h3>
                       <p className="text-sm text-gray-200">{event.category}</p>
                       <div className="flex justify-between mt-2 text-sm text-gray-200">

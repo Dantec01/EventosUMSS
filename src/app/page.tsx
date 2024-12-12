@@ -28,7 +28,6 @@ export default function Home() {
     events,
     latestEvents,
     isLoading,
-    currentEventIndex,
     showSavedOnly,
     loadEvents,
     loadFavorites,

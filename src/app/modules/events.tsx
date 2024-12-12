@@ -24,6 +24,7 @@ export function useEvents() {
   const [favorites, setFavorites] = useState<number[]>([])
   const [showSavedOnly, setShowSavedOnly] = useState(false)
   const [nearbyEvents, setNearbyEvents] = useState<Event[]>([]) // Estado para eventos cercanos
+  const [recommendedEvents, setRecommendedEvents] = useState<Event[]>([]) // Estado para eventos recomendados
 
   const loadEvents = async () => {
     try {
@@ -178,6 +179,32 @@ export function useEvents() {
     });
   };
 
+  const getRecommendedEvents = async () => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+
+    try {
+      const response = await fetch('/api/eventos/recomendados', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json()
+      
+      // Si hay un error o data no es un array, usar array vacío
+      const events = Array.isArray(data) ? data : []
+      
+      const eventsWithFavorites = events.map((event: Event) => ({
+        ...event,
+        isSaved: favorites.includes(event.id)
+      }))
+      setRecommendedEvents(eventsWithFavorites)
+    } catch (error) {
+      console.error('Error obteniendo eventos recomendados:', error)
+      setRecommendedEvents([])
+    }
+  }
+
   const getVisibleEvents = () => {
     return latestEvents
   }
@@ -206,6 +233,8 @@ export function useEvents() {
     setLatestEvents,
     nearbyEvents, // Estado para eventos cercanos
     getNearbyEvents, // Función para obtener la ubicación y eventos cercanos
+    recommendedEvents,
+    getRecommendedEvents
   }
 }
 

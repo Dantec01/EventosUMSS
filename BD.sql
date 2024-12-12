@@ -121,6 +121,19 @@ CREATE TABLE evento (
     FOREIGN KEY (ubicacion_id) REFERENCES ubicaciones(id)
 );
 
+-- Crear tabla evento_tema
+CREATE TABLE evento_tema (
+    id SERIAL PRIMARY KEY,
+    evento_id INT NOT NULL,
+    tema_id INT NOT NULL,
+    FOREIGN KEY (evento_id) REFERENCES evento(id) ON DELETE CASCADE,
+    FOREIGN KEY (tema_id) REFERENCES temas(id),
+    UNIQUE(evento_id, tema_id)
+);
+
+-- Crear índice para mejorar el rendimiento de las búsquedas
+CREATE INDEX idx_evento_tema ON evento_tema(tema_id);
+
 -- Crear tabla favorito
 CREATE TABLE favorito (
     id SERIAL PRIMARY KEY,

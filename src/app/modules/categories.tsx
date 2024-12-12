@@ -9,6 +9,8 @@ import { EventCarousel } from "./carousel"
 interface CategoriesProps {
   categories: Category[]
   latestEvents: Event[]
+  nearbyEvents: Event[]
+  recommendedEvents: Event[]
   selectedCategory: string | null
   onCategoryClick: (category: string) => void
   onEventClick: (event: Event) => void
@@ -18,6 +20,8 @@ interface CategoriesProps {
 export function Categories({ 
   categories, 
   latestEvents,
+  nearbyEvents,
+  recommendedEvents,
   selectedCategory,
   onCategoryClick, 
   onEventClick,
@@ -41,7 +45,20 @@ export function Categories({
           </Card>
         ))}
       </div>
-      <EventCarousel events={latestEvents} onEventClick={onEventClick} />
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Últimos eventos</h2>
+        <EventCarousel events={latestEvents} onEventClick={onEventClick} />
+      </div>
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Eventos más cercanos</h2>
+        <EventCarousel events={nearbyEvents} onEventClick={onEventClick} />
+      </div>
+      {recommendedEvents.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Eventos recomendados</h2>
+          <EventCarousel events={recommendedEvents} onEventClick={onEventClick} />
+        </div>
+      )}
     </>
   )
 }
