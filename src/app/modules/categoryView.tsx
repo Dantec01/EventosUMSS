@@ -21,6 +21,7 @@ export function CategoryView({
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null)
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
   const [filteredEvents, setFilteredEvents] = useState<Event[]>(events)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Categorías predefinidas
   const categories: Category[] = [
@@ -54,24 +55,64 @@ export function CategoryView({
     "Medicina", "Medio Ambiente", "Música", "Otros", "Tecnología"
   ]
 
+  // Actualizar eventos filtrados cuando cambien los eventos globales
   useEffect(() => {
-    filterEvents()
-  }, [selectedCategory, selectedLocation, selectedInterest, events])
+    if (!selectedCategory && !selectedLocation && !selectedInterest) {
+      setFilteredEvents(events)
+    } else {
+      // Actualizar el estado de favoritos en los eventos filtrados
+      setFilteredEvents(prevFiltered => 
+        prevFiltered.map(filteredEvent => ({
+          ...filteredEvent,
+          isSaved: events.find(e => e.id === filteredEvent.id)?.isSaved || false
+        }))
+      )
+    }
+  }, [events])
 
-  const filterEvents = () => {
-    let filtered = [...events]
-    
-    if (selectedCategory) {
-      filtered = filtered.filter(event => event.category === selectedCategory)
+  useEffect(() => {
+    loadFilteredEvents()
+  }, [selectedCategory, selectedLocation, selectedInterest])
+
+  const loadFilteredEvents = async () => {
+    // Si no hay filtros activos, usar los eventos pasados como prop
+    if (!selectedCategory && !selectedLocation && !selectedInterest) {
+      setFilteredEvents(events)
+      return
     }
-    if (selectedLocation) {
-      filtered = filtered.filter(event => event.location === selectedLocation)
+
+    try {
+      setIsLoading(true)
+      let url = '/api/eventos/filtrar?'
+      const params = new URLSearchParams()
+      
+      if (selectedCategory) {
+        params.append('categoria', selectedCategory)
+      }
+      if (selectedLocation) {
+        params.append('ubicacion', selectedLocation)
+      }
+      if (selectedInterest) {
+        params.append('interes', selectedInterest)
+      }
+      
+      url += params.toString()
+      
+      const response = await fetch(url)
+      const data = await response.json()
+      
+      // Asignar el estado de favoritos actual a los eventos filtrados
+      const eventsWithFavorites = data.map((event: Event) => ({
+        ...event,
+        isSaved: events.find(e => e.id === event.id)?.isSaved || false
+      }))
+      
+      setFilteredEvents(eventsWithFavorites)
+    } catch (error) {
+      console.error('Error cargando eventos filtrados:', error)
+    } finally {
+      setIsLoading(false)
     }
-    if (selectedInterest) {
-      filtered = filtered.filter(event => event.category === selectedInterest)
-    }
-    
-    setFilteredEvents(filtered)
   }
 
   // Handlers para la UI
@@ -80,15 +121,15 @@ export function CategoryView({
   }
 
   const handleLocationChange = (location: string) => {
-    setSelectedLocation(location === 'all' ? null : location)
+    setSelectedLocation(location === selectedLocation ? null : location)
   }
 
   const handleInterestChange = (interest: string) => {
-    setSelectedInterest(interest === 'all' ? null : interest)
+    setSelectedInterest(interest === selectedInterest ? null : interest)
   }
 
   const handleEventClick = (event: Event) => {
-    console.log('Evento seleccionado:', event)
+    // Implementar si es necesario
   }
 
   const handleBackToCategories = () => {
