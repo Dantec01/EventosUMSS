@@ -20,7 +20,6 @@ interface EventsProps {
 export function useEvents() {
   const [events, setEvents] = useState<Event[]>([])
   const [latestEvents, setLatestEvents] = useState<Event[]>([])
-  const [currentEventIndex, setCurrentEventIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [favorites, setFavorites] = useState<number[]>([])
   const [showSavedOnly, setShowSavedOnly] = useState(false)
@@ -40,8 +39,6 @@ export function useEvents() {
       })
       
       setEvents(sortedEvents)
-      
-      // Obtener los 5 eventos más recientes
       setLatestEvents(sortedEvents.slice(0, 5))
       setIsLoading(false)
 
@@ -181,15 +178,8 @@ export function useEvents() {
     });
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentEventIndex((prevIndex) => (prevIndex + 1) % 3)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
-
   const getVisibleEvents = () => {
-    return latestEvents.slice(currentEventIndex, currentEventIndex + 3)
+    return latestEvents
   }
 
   const toggleShowSavedOnly = () => {
@@ -205,7 +195,6 @@ export function useEvents() {
     latestEvents,
     isLoading,
     favorites,
-    currentEventIndex,
     showSavedOnly,
     loadEvents,
     loadFavorites,
