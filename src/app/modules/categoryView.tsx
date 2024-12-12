@@ -6,18 +6,21 @@ import { EventsByCategory } from './events'
 import { Event, Category } from './types'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export function CategoryView() {
-  // Estado local del componente
-  const [events, setEvents] = useState<Event[]>([])
-  const [allEvents, setAllEvents] = useState<Event[]>([]) // Guardamos todos los eventos sin filtrar
-  const [latestEvents, setLatestEvents] = useState<Event[]>([])
+export function CategoryView({ 
+  events,
+  isAuthenticated,
+  token,
+  onToggleFavorite
+}: {
+  events: Event[]
+  isAuthenticated: boolean
+  token: string | null
+  onToggleFavorite: (eventId: number) => void
+}) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null)
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [favorites, setFavorites] = useState<number[]>([])
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [token, setToken] = useState<string | null>(null)
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>(events)
 
   // Categorías predefinidas
   const categories: Category[] = [
@@ -51,147 +54,24 @@ export function CategoryView() {
     "Medicina", "Medio Ambiente", "Música", "Otros", "Tecnología"
   ]
 
-  // Cargar eventos y verificar autenticación al montar el componente
   useEffect(() => {
-    const loadInitialData = async () => {
-      await loadEvents()
-      const storedToken = localStorage.getItem('token')
-      if (storedToken) {
-        setToken(storedToken)
-        setIsAuthenticated(true)
-        await loadFavorites(storedToken)
-      }
+    filterEvents()
+  }, [selectedCategory, selectedLocation, selectedInterest, events])
+
+  const filterEvents = () => {
+    let filtered = [...events]
+    
+    if (selectedCategory) {
+      filtered = filtered.filter(event => event.category === selectedCategory)
     }
-    loadInitialData()
-  }, [])
-
-  // Cargar eventos desde la API con filtros
-  const loadEvents = async () => {
-    try {
-      setIsLoading(true)
-      
-      if (!selectedCategory && !selectedLocation && !selectedInterest) {
-        // Si no hay filtros activos y ya tenemos los eventos, los usamos
-        if (allEvents.length > 0) {
-          setEvents(allEvents)
-          setLatestEvents(allEvents.slice(0, 5))
-          setIsLoading(false)
-          return
-        }
-        
-        // Si no tenemos eventos, hacemos la llamada inicial
-        const response = await fetch('/api/eventos')
-        const data = await response.json()
-        const eventsWithFavorites = data.map((event: Event) => ({
-          ...event,
-          isSaved: favorites.includes(event.id)
-        }))
-        
-        setAllEvents(eventsWithFavorites)
-        setEvents(eventsWithFavorites)
-        setLatestEvents(eventsWithFavorites.slice(0, 5))
-        setIsLoading(false)
-        return
-      }
-      
-      // Si hay filtros activos, hacemos la llamada con filtros
-      let url = '/api/eventos/filtrar?'
-      const params = new URLSearchParams()
-      
-      if (selectedCategory) {
-        params.append('categoria', selectedCategory)
-      }
-      if (selectedLocation) {
-        params.append('ubicacion', selectedLocation)
-      }
-      if (selectedInterest) {
-        params.append('interes', selectedInterest)
-      }
-      
-      url += params.toString()
-      
-      const response = await fetch(url)
-      const data = await response.json()
-      
-      const eventsWithFavorites = data.map((event: Event) => ({
-        ...event,
-        isSaved: favorites.includes(event.id)
-      }))
-      
-      setEvents(eventsWithFavorites)
-      setIsLoading(false)
-    } catch (error) {
-      console.error('Error cargando eventos:', error)
-      setIsLoading(false)
+    if (selectedLocation) {
+      filtered = filtered.filter(event => event.location === selectedLocation)
     }
-  }
-
-  // Efecto para cargar eventos cuando cambian los filtros
-  useEffect(() => {
-    loadEvents()
-  }, [selectedCategory, selectedLocation, selectedInterest])
-
-  // Cargar favoritos del usuario
-  const loadFavorites = async (token: string) => {
-    try {
-      const response = await fetch('/api/favoritos', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        const favoriteIds = data.map((fav: any) => fav.id)
-        setFavorites(favoriteIds)
-        
-        setEvents(prevEvents => prevEvents.map(event => ({
-          ...event,
-          isSaved: favoriteIds.includes(event.id)
-        })))
-      }
-    } catch (error) {
-      console.error('Error al cargar favoritos:', error)
+    if (selectedInterest) {
+      filtered = filtered.filter(event => event.category === selectedInterest)
     }
-  }
-
-  // Manejar toggle de favoritos
-  const handleToggleFavorite = async (eventId: number) => {
-    if (!token) return
-
-    try {
-      const method = favorites.includes(eventId) ? 'DELETE' : 'POST'
-      const response = await fetch('/api/favoritos', {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ evento_id: eventId })
-      })
-
-      if (response.ok || response.status === 409) {
-        const newFavorites = method === 'DELETE' 
-          ? favorites.filter(id => id !== eventId)
-          : [...favorites, eventId]
-        
-        setFavorites(newFavorites)
-        
-        setEvents(prevEvents => prevEvents.map(event => 
-          event.id === eventId 
-            ? { ...event, isSaved: !event.isSaved }
-            : event
-        ))
-        
-        setLatestEvents(prevEvents => prevEvents.map(event => 
-          event.id === eventId 
-            ? { ...event, isSaved: !event.isSaved }
-            : event
-        ))
-      }
-    } catch (error) {
-      console.error('Error al actualizar favorito:', error)
-    }
+    
+    setFilteredEvents(filtered)
   }
 
   // Handlers para la UI
@@ -215,9 +95,7 @@ export function CategoryView() {
     setSelectedCategory(null)
     setSelectedLocation(null)
     setSelectedInterest(null)
-    // Usamos los eventos guardados en lugar de hacer una nueva llamada
-    setEvents(allEvents)
-    setLatestEvents(allEvents.slice(0, 5))
+    setFilteredEvents(events)
   }
 
   // Componente de Selectores
@@ -259,10 +137,6 @@ export function CategoryView() {
     </div>
   )
 
-  if (isLoading) {
-    return <div>Cargando...</div>
-  }
-
   return (
     <div className="container mx-auto px-4">
       {selectedCategory ? (
@@ -274,18 +148,18 @@ export function CategoryView() {
             <Filters />
           </div>
           <EventsByCategory
-            events={events}
+            events={filteredEvents}
             isAuthenticated={isAuthenticated}
             category={selectedCategory}
             onEventClick={handleEventClick}
-            onToggleFavorite={handleToggleFavorite}
+            onToggleFavorite={onToggleFavorite}
             onBack={handleBackToCategories}
           />
         </>
       ) : (
         <Categories
           categories={categories}
-          latestEvents={latestEvents}
+          latestEvents={events.slice(0, 5)}
           selectedCategory={selectedCategory}
           onCategoryClick={handleCategoryClick}
           onEventClick={handleEventClick}

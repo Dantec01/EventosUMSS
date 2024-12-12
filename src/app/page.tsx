@@ -152,7 +152,12 @@ export default function Home() {
               <TabsTrigger value="add" className={`flex-grow text-white ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isAuthenticated}>Agregar</TabsTrigger>
             </TabsList>
             <TabsContent value="categories">
-              <CategoryView />
+              <CategoryView 
+                events={events}
+                isAuthenticated={isAuthenticated}
+                token={token}
+                onToggleFavorite={(eventId) => toggleFavorite(eventId, token)}
+              />
             </TabsContent>
             <TabsContent value="events">
               <Events 

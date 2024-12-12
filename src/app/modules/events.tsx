@@ -74,6 +74,14 @@ export function useEvents() {
         setEvents(updatedEvents)
         setLatestEvents(updatedEvents.slice(0, 5))
         
+        // Actualizar también los eventos cercanos con el estado de favoritos
+        setNearbyEvents(prevNearby => 
+          prevNearby.map(event => ({
+            ...event,
+            isSaved: favoriteIds.includes(event.id)
+          }))
+        )
+        
         return updatedEvents
       }
       return currentEvents
@@ -104,6 +112,7 @@ export function useEvents() {
           setFavorites(prev => [...prev, eventId])
         }
         
+        // Actualizar eventos normales
         setEvents(prevEvents =>
           prevEvents.map(event =>
             event.id === eventId
@@ -112,8 +121,18 @@ export function useEvents() {
           )
         )
 
+        // Actualizar eventos recientes
         setLatestEvents(prevLatest => 
           prevLatest.map(event =>
+            event.id === eventId
+              ? { ...event, isSaved: !event.isSaved }
+              : event
+          )
+        )
+
+        // Actualizar eventos cercanos
+        setNearbyEvents(prevNearby =>
+          prevNearby.map(event =>
             event.id === eventId
               ? { ...event, isSaved: !event.isSaved }
               : event
@@ -129,7 +148,7 @@ export function useEvents() {
     }
   }
 
-  const getNearbyEvents = async () => { // Función para obtener la ubicación y eventos cercanos
+  const getNearbyEvents = async () => {
     if (!navigator.geolocation) {
       alert('La geolocalización no está soportada por tu navegador');
       return;
@@ -146,7 +165,12 @@ export function useEvents() {
           body: JSON.stringify({ latitude, longitude }),
         });
         const data = await response.json();
-        setNearbyEvents(data);
+        // Asignar el estado de favoritos actual a los eventos cercanos
+        const eventsWithFavorites = data.map((event: Event) => ({
+          ...event,
+          isSaved: favorites.includes(event.id)
+        }));
+        setNearbyEvents(eventsWithFavorites);
       } catch (error) {
         console.error('Error obteniendo eventos cercanos:', error);
         alert('Error al obtener eventos cercanos');
