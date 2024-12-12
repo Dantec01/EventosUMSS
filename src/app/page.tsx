@@ -8,6 +8,7 @@ import { LogIn } from "lucide-react"
 // Importar componentes modulares
 import { Event, Category } from './modules/types'
 import { Login } from './modules/login'
+import { RegisterForm } from './modules/registerForm'
 import { SearchBar } from './modules/search'
 import { EventDetails } from './modules/eventDetails'
 import { Events, EventsByCategory, useEvents } from './modules/events'
@@ -74,6 +75,26 @@ export default function Home() {
     { name: "Otros", image: "/images/otros.jpg?height=200&width=300" },
   ]
 
+  const interests = [
+    { id: 1, nombre: "Tecnología" },
+    { id: 2, nombre: "Ciencias" },
+    { id: 3, nombre: "Arte y Cultura" },
+    { id: 4, nombre: "Deportes" },
+    { id: 5, nombre: "Música" },
+    { id: 6, nombre: "Literatura" },
+    { id: 7, nombre: "Medicina" },
+    { id: 8, nombre: "Ingeniería" },
+    { id: 9, nombre: "Arquitectura" },
+    { id: 10, nombre: "Medio Ambiente" },
+    { id: 11, nombre: "Emprendimiento" },
+    { id: 12, nombre: "Innovación" },
+    { id: 13, nombre: "Educación" },
+    { id: 14, nombre: "Investigación" },
+    { id: 15, nombre: "Entretenimiento" },
+    { id: 16, nombre: "Gastronomía" },
+    { id: 17, nombre: "Otros" }
+  ];
+
   const openEventDetails = (event: Event) => {
     setSelectedEvent(event)
   }
@@ -102,6 +123,12 @@ export default function Home() {
     setSelectedCategory(null)
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    setIsAuthenticated(false)
+    setToken(null)
+  }
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Cargando eventos...</div>
   }
@@ -114,20 +141,31 @@ export default function Home() {
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/UMSS.png" alt="UMSS Logo" className="w-6 h-8" />
             <span className="text-lg font-semibold text-white">Eventos UMSS</span>
           </div>
-          {isAuthenticated ? (
-            <Button size="sm" className="hover:bg-red-500" onClick={() => {
-              localStorage.removeItem('token')
-              setIsAuthenticated(false)
-              setToken(null)
-            }}>
-              Logout
-            </Button>
-          ) : (
-            <Button size="sm" variant="ghost" className="bg-green-400 hover:bg-green-500" onClick={() => setIsLoginOpen(true)}>
-              <LogIn className="h-4 w-4 mr-2" />
-              Login
-            </Button>
-          )}
+          <div className="flex items-center space-x-4">
+            <RegisterForm 
+              isAuthenticated={isAuthenticated} 
+              interests={interests}
+              onRegisterSuccess={() => {
+                // Aquí puedes agregar lógica adicional después del registro exitoso
+                // Por ejemplo, mostrar un mensaje o redirigir al login
+              }}
+            />
+            {isAuthenticated ? (
+              <Button size="sm" className="hover:bg-red-500" onClick={handleLogout}>
+                Logout
+              </Button>
+            ) : (
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="bg-green-400 hover:bg-green-500" 
+                onClick={() => setIsLoginOpen(true)}
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Login
+              </Button>
+            )}
+          </div>
         </div>
         <SearchBar 
           searchTerm={searchTerm}
@@ -190,6 +228,7 @@ export default function Home() {
               <EventForm 
                 isAuthenticated={isAuthenticated}
                 categories={categories}
+                interests={interests}
                 onEventCreated={(event) => setEvents([event, ...events])}
               />
             </TabsContent>

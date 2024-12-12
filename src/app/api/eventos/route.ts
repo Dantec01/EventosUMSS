@@ -24,6 +24,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
+    const tema_id = formData.get('tema_id') as string;
     const date = formData.get('date') as string;
     const time = formData.get('time') as string;
     const location = formData.get('location') as string;
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
       title, 
       imagePath, 
       category, 
+      tema_id, 
       date, 
       time, 
       location, 
@@ -59,8 +61,8 @@ export async function POST(request: Request) {
 
     // Guardar evento en base de datos
     const result = await pool.query(
-      'INSERT INTO evento (title, image, category, date, time, location, description, usuario_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-      [title, imagePath, category, date, time, location, description, usuario_id]
+      'INSERT INTO evento (title, image, category, tema_id, date, time, location, description, usuario_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      [title, imagePath, category, tema_id, date, time, location, description, usuario_id]
     );
 
     return NextResponse.json(result.rows[0], { status: 201 });

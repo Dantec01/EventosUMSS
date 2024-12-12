@@ -19,6 +19,7 @@ export interface Category {
 export interface NewEvent {
   title: string
   category: string
+  tema_id: number
   date: string
   time: string
   location: string

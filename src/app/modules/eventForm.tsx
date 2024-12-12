@@ -12,6 +12,7 @@ import { Category, NewEvent } from './types'
 interface EventFormProps {
   isAuthenticated: boolean
   categories: Category[]
+  interests: { id: number, nombre: string }[]
   onEventCreated: (event: any) => void
 }
 
@@ -19,6 +20,7 @@ export function useEventForm(onEventCreated: (event: any) => void) {
   const [newEvent, setNewEvent] = useState<NewEvent>({
     title: '',
     category: '',
+    tema_id: 0,
     date: '',
     time: '',
     location: '',
@@ -41,7 +43,7 @@ export function useEventForm(onEventCreated: (event: any) => void) {
     e.preventDefault()
 
     // Validar campos
-    if (!newEvent.title || !newEvent.category || !newEvent.date || 
+    if (!newEvent.title || !newEvent.category || !newEvent.tema_id || !newEvent.date || 
         !newEvent.time || !newEvent.location || !newEvent.description || !newEvent.image) {
       alert('Por favor, complete todos los campos')
       return
@@ -50,6 +52,7 @@ export function useEventForm(onEventCreated: (event: any) => void) {
     const formData = new FormData()
     formData.append('title', newEvent.title)
     formData.append('category', newEvent.category)
+    formData.append('tema_id', newEvent.tema_id.toString())
     formData.append('date', newEvent.date)
     formData.append('time', newEvent.time)
     formData.append('location', newEvent.location)
@@ -78,6 +81,7 @@ export function useEventForm(onEventCreated: (event: any) => void) {
       setNewEvent({
         title: '',
         category: '',
+        tema_id: 0,
         date: '',
         time: '',
         location: '',
@@ -101,7 +105,7 @@ export function useEventForm(onEventCreated: (event: any) => void) {
   }
 }
 
-export function EventForm({ isAuthenticated, categories, onEventCreated }: EventFormProps) {
+export function EventForm({ isAuthenticated, categories, interests, onEventCreated }: EventFormProps) {
   const {
     newEvent,
     handleNewEventChange,
@@ -141,6 +145,21 @@ export function EventForm({ isAuthenticated, categories, onEventCreated }: Event
                 {categories.map((category) => (
                   <SelectItem key={category.name} value={category.name}>
                     {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="tema">Tema</Label>
+            <Select name="tema" value={newEvent.tema_id.toString()} onValueChange={(value) => setNewEvent(prev => ({ ...prev, tema_id: parseInt(value) }))}>
+              <SelectTrigger className="w-full bg-white">
+                <SelectValue placeholder="Selecciona un tema" />
+              </SelectTrigger>
+              <SelectContent>
+                {interests.map((interest) => (
+                  <SelectItem key={interest.id} value={interest.id.toString()}>
+                    {interest.nombre}
                   </SelectItem>
                 ))}
               </SelectContent>
