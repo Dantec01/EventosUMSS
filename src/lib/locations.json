@@ -1,0 +1,15 @@
+{
+  "locations": [
+    { "name": "UMSS Campus Central" },
+    { "name": "UMSS Facultad de Agronomía" },
+    { "name": "UMSS Facultad de Arquitectura" },
+    { "name": "UMSS Facultad de Derecho" },
+    { "name": "UMSS Facultad de Economía" },
+    { "name": "UMSS Facultad de Humanidades" },
+    { "name": "UMSS Facultad de Medicina" },
+    { "name": "UMSS Facultad de Odontología" },
+    { "name": "UMSS Facultad de Tecnología" },
+    { "name": "UMSS Facultad de Veterinaria" },
+    { "name": "UMSS Valle de Sacta" }
+  ]
+}
