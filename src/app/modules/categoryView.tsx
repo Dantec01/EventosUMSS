@@ -11,12 +11,16 @@ export function CategoryView({
   events,
   isAuthenticated,
   token,
-  onToggleFavorite
+  onToggleFavorite,
+  recommendedEvents,
+  getRecommendedEvents
 }: {
   events: Event[]
   isAuthenticated: boolean
   token: string | null
   onToggleFavorite: (eventId: number) => void
+  recommendedEvents: Event[]
+  getRecommendedEvents: () => void
 }) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null)
@@ -25,7 +29,7 @@ export function CategoryView({
   const [isLoading, setIsLoading] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
-  const { nearbyEvents, getNearbyEvents, recommendedEvents, getRecommendedEvents } = useEvents()
+  const { nearbyEvents, getNearbyEvents } = useEvents()
 
   useEffect(() => {
     if (isAuthenticated) {

@@ -19,13 +19,26 @@ export async function GET(req: Request) {
         SELECT tema_id 
         FROM temas_usuario 
         WHERE usuario_id = $1
+      ),
+      recommended_events AS (
+        -- Primero obtener eventos que coincidan con los temas del usuario
+        SELECT e.*, 1 as priority
+        FROM evento e
+        WHERE e.tema_id IN (SELECT tema_id FROM user_topics)
+        AND e.date >= CURRENT_DATE
+
+        UNION ALL
+
+        -- Luego obtener algunos eventos recientes si no hay suficientes
+        SELECT e.*, 2 as priority
+        FROM evento e
+        WHERE e.date >= CURRENT_DATE
+        AND e.tema_id NOT IN (SELECT tema_id FROM user_topics)
+        LIMIT 3
       )
-      SELECT DISTINCT e.* 
-      FROM evento e
-      WHERE e.tema_id IN (SELECT tema_id FROM user_topics)
-      AND e.date >= CURRENT_DATE
-      ORDER BY e.date ASC
-      LIMIT 5
+      SELECT DISTINCT * FROM recommended_events
+      ORDER BY priority ASC, date ASC
+      LIMIT 10
     `;
 
     const eventosResult = await pool.query(eventosQuery, [usuario_id]);

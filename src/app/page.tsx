@@ -38,7 +38,9 @@ export default function Home() {
     handleShowAllEvents,
     setEvents,
     nearbyEvents,
-    getNearbyEvents
+    getNearbyEvents,
+    recommendedEvents,
+    getRecommendedEvents
   } = useEvents()
 
   const {
@@ -194,6 +196,8 @@ export default function Home() {
                 isAuthenticated={isAuthenticated}
                 token={token}
                 onToggleFavorite={(eventId) => toggleFavorite(eventId, token)}
+                recommendedEvents={recommendedEvents}
+                getRecommendedEvents={getRecommendedEvents}
               />
             </TabsContent>
             <TabsContent value="events">
