@@ -76,22 +76,22 @@ export default function Home() {
   ]
 
   const interests = [
-    { id: 1, nombre: "Tecnología" },
-    { id: 2, nombre: "Ciencias" },
-    { id: 3, nombre: "Arte y Cultura" },
+    { id: 1, nombre: "Arquitectura" },
+    { id: 2, nombre: "Arte y Cultura" },
+    { id: 3, nombre: "Ciencias" },
     { id: 4, nombre: "Deportes" },
-    { id: 5, nombre: "Música" },
-    { id: 6, nombre: "Literatura" },
-    { id: 7, nombre: "Medicina" },
-    { id: 8, nombre: "Ingeniería" },
-    { id: 9, nombre: "Arquitectura" },
-    { id: 10, nombre: "Medio Ambiente" },
-    { id: 11, nombre: "Emprendimiento" },
-    { id: 12, nombre: "Innovación" },
-    { id: 13, nombre: "Educación" },
-    { id: 14, nombre: "Investigación" },
-    { id: 15, nombre: "Entretenimiento" },
-    { id: 16, nombre: "Gastronomía" },
+    { id: 5, nombre: "Educación" },
+    { id: 6, nombre: "Emprendimiento" },
+    { id: 7, nombre: "Entretenimiento" },
+    { id: 8, nombre: "Gastronomía" },
+    { id: 9, nombre: "Ingeniería" },
+    { id: 10, nombre: "Innovación" },
+    { id: 11, nombre: "Investigación" },
+    { id: 12, nombre: "Literatura" },
+    { id: 13, nombre: "Medicina" },
+    { id: 14, nombre: "Medio Ambiente" },
+    { id: 15, nombre: "Música" },
+    { id: 16, nombre: "Tecnología" },
     { id: 17, nombre: "Otros" }
   ];
 

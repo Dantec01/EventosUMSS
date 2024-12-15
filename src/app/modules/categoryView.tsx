@@ -63,7 +63,7 @@ export function CategoryView({
     "Arquitectura", "Arte y Cultura", "Ciencias", "Deportes",
     "Educación", "Emprendimiento", "Entretenimiento", "Gastronomía",
     "Ingeniería", "Innovación", "Investigación", "Literatura",
-    "Medicina", "Medio Ambiente", "Música", "Otros", "Tecnología"
+    "Medicina", "Medio Ambiente", "Música", "Tecnología", "Otros"
   ]
 
   // Actualizar eventos filtrados cuando cambien los eventos globales
