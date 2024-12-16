@@ -1,5 +1,3 @@
-# Nota: Actualmente el mayor avance esta en la rama "pruebas"  
--------------------------------------------------------------------------------------------------------------------------------------------------------
 # EventosUMSS  
 Pagina web para los eventos de la UMSS enfocada en mobile first
 
@@ -7,13 +5,14 @@ Pagina web para los eventos de la UMSS enfocada en mobile first
 
 ## Características principales
 
+- **Http2 y ssl instalados**: Para una mejora de velocidad de conexión. SSL encripta datos entre servidor y cliente para seguridad.
 - **Visualización de eventos**: Muestra todos los eventos disponibles en la universidad, categorizados por facultad y carrera.
 - **Buscador de eventos**: Permite a los usuarios buscar eventos de forma rápida y eficiente.
 - **Calendario personalizado**: Los usuarios pueden guardar eventos que les interesen en su propio calendario.
-- **Notificaciones**: Recordatorios automáticos para los eventos guardados.
-- **Administrador**: Solo los administradores pueden agregar nuevos eventos.
-- **Formulario de solicitud de eventos**: Los usuarios pueden proponer nuevos eventos a través de un formulario, que será revisado y aprobado por un administrador.
-- **Sistema de login**: Los usuarios deben iniciar sesión para poder guardar y gestionar sus eventos personales.
+- **Formulario de creacion de eventos**: Los usuarios pueden proponer nuevos eventos a través de un formulario, que será revisado y aprobado por un administrador.
+- **Sistema de login y registro**: Los usuarios deben iniciar sesión para poder guardar y gestionar sus eventos personales, toda la info se guarda en localstorage.
+- **Eventos mas cercanos**: Se muestran los eventos mas cercanos a la ubicacion actual del usuario (API navegador)
+- **Sliders de eventos**: Se muestran sugerencias en base a los ultimos eventos agregados, eventos mas cercanos al usuario, eventos recomendados por temas de interes del usuario.
 
 ## Tecnologías
 
@@ -27,34 +26,41 @@ Pagina web para los eventos de la UMSS enfocada en mobile first
 
 - **Postgres**: PostgreSQL, también llamado Postgres, es un sistema de gestión de bases de datos relacional orientado a objetos y de código abierto.
 
-## Funcionalidades futuras
+## Librerias
 
-- **Soporte de notificaciones push** para recordatorios de eventos.
-- **Integración con calendarios externos** (Google Calendar, Outlook, etc.) para sincronización de eventos.
-- **Módulo de sugerencias de eventos** basado en las preferencias del usuario.
+**jsonwebtoken:** Para generar y verificar tokens JWT (JSON Web Tokens) que se usan en la autenticación de usuarios.
 
-## UI 
+**bcrypt:** Para hashear y verificar contraseñas de forma segura.
 
-![home](https://github.com/user-attachments/assets/3d2d0338-5999-4d03-a7c1-8d712317b786)
+**jose:** Implementación de estándares de seguridad web como JWT, JWE, JWS.
 
-![eventos](https://github.com/user-attachments/assets/bca96ec0-de2c-4d52-adb9-d559bd131f1f)
+**pg:** Cliente PostgreSQL para Node.js, usado para conectar y hacer consultas a la base de datos.
 
-![calendario](https://github.com/user-attachments/assets/ef8168cb-f2f0-4907-9122-dfa980a2d39c)
+**selfsigned:** Para generar certificados SSL autofirmados para desarrollo local.
 
-![formulario](https://github.com/user-attachments/assets/0e5ded2d-a1c4-48a1-8a16-712346b564bf)
+## USER INTERFACE 
+![eve7](https://github.com/user-attachments/assets/6a7d702d-9f4c-4621-8bc7-66bf71d4252e)
+![eve8](https://github.com/user-attachments/assets/22886dfc-1f4c-47ae-ac08-c9775efab58e)
 
-## Diagrama ER base de datos
+## INSTALACION
 
-![diagrama er](https://github.com/user-attachments/assets/5399aa71-e60e-4b3a-927f-afa9db1c8dd4)
+  1. Clonar el repositorio
+  2. Instalar dependencias: Abrir una terminal en la ubicacion del proyecto y ejecutar: **npm install**
+  3. Generar un certificado ssl. En la terminal ejecutar **node generateCert.js**
+  4. Crear la Base de datos en **POSTGRESQL** usando el archivo **BD.sql**
+  5. Iniciar el servidor con: **npm run start**
+  6. Ingresar a **https://localhost:3000** ignorar el mensaje de precaucion y proceder a la pagina.
 
-## Base de datos
+## Nota
 
-![base de datos](https://github.com/user-attachments/assets/5422c0b4-6dd6-483d-9357-3986a8bb4c80)
-
+  - Necesita iniciar sesión para habilitar todas las caracteristicas de la pagina puede usar (User: test@test.com  pas: 123456).
+  - Aceptar que el navegador pueda acceder a su ubicacion para mostrarle los eventos mas cercanos.
+  - Las credenciales para conectarse a la base de datos se encuentran en .env.local.
+    
 ## Licencia
 
 Este proyecto está bajo una licencia personalizada. Consulta el archivo `LICENSE.txt` para obtener más información.
 
 ---
 
-Proyecto en desarrollo 🚧
+Proyecto en Finalizado 🚧
