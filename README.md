@@ -39,7 +39,7 @@ Pagina web para los eventos de la UMSS enfocada en mobile first
 **selfsigned:** Para generar certificados SSL autofirmados para desarrollo local.
 
 ## USER INTERFACE 
-![eve7](https://github.com/user-attachments/assets/6a7d702d-9f4c-4621-8bc7-66bf71d4252e)
+![eve7](https://github.com/user-attachments/assets/e72d55b7-56b0-4853-8b2b-bae30ac14355)
 ![eve8](https://github.com/user-attachments/assets/22886dfc-1f4c-47ae-ac08-c9775efab58e)
 
 ## INSTALACION
